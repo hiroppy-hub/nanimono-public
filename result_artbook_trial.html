@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ナニモノ — 聖女 Artbook Trial</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600;700&family=Zen+Old+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #f6edf3;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(244, 206, 230, 0.18), transparent 28%),
+    radial-gradient(circle at 84% 2%, rgba(205, 184, 255, 0.15), transparent 30%),
+    radial-gradient(circle at 50% 78%, rgba(174, 112, 170, 0.14), transparent 42%),
+    linear-gradient(180deg, #070b17 0%, #0d101d 44%, #090a12 100%);
+  font-family: "Noto Serif JP", "Yu Mincho", serif;
+  line-height: 1.95;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  background:
+    linear-gradient(90deg, rgba(214, 172, 114, 0.45), transparent 8%, transparent 92%, rgba(214, 172, 114, 0.45)),
+    linear-gradient(180deg, rgba(214, 172, 114, 0.45), transparent 8%, transparent 92%, rgba(214, 172, 114, 0.45));
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  padding: 20px;
+  border: 1px solid rgba(222, 183, 126, 0.34);
+  opacity: 0.5;
+}
+body::after {
+  background-image:
+    radial-gradient(circle at 8% 12%, rgba(255, 209, 224, 0.14) 0 2px, transparent 3px),
+    radial-gradient(circle at 92% 24%, rgba(255, 209, 224, 0.12) 0 2px, transparent 3px),
+    radial-gradient(circle at 20% 76%, rgba(210, 190, 255, 0.12) 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 86%, rgba(255, 229, 196, 0.12) 0 1px, transparent 2px);
+  background-size: 220px 260px, 260px 320px, 180px 220px, 300px 360px;
+  opacity: 0.72;
+}
+
+.petals {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.petals i {
+  position: absolute;
+  top: -40px;
+  width: var(--s);
+  height: calc(var(--s) * 0.72);
+  left: var(--x);
+  background: radial-gradient(circle at 35% 25%, #fff4fb 0%, #f8c2d2 58%, rgba(238, 157, 188, 0.35) 100%);
+  border-radius: 70% 20% 70% 30%;
+  opacity: 0;
+  filter: blur(0.1px);
+  animation: fall var(--d) linear infinite;
+  animation-delay: var(--delay);
+}
+@keyframes fall {
+  0% { transform: translate3d(0, -40px, 0) rotate(0deg); opacity: 0; }
+  12% { opacity: 0.62; }
+  48% { transform: translate3d(var(--drift), 48vh, 0) rotate(170deg); }
+  88% { opacity: 0.52; }
+  100% { transform: translate3d(calc(var(--drift) * -0.45), 108vh, 0) rotate(330deg); opacity: 0; }
+}
+
+.page {
+  position: relative;
+  z-index: 2;
+  width: min(1280px, calc(100vw - 48px));
+  margin: 0 auto;
+  padding: 26px 0 88px;
+}
+
+.art-shell {
+  position: relative;
+  border: 1px solid rgba(222, 184, 128, 0.58);
+  border-radius: 2px;
+  padding: clamp(22px, 4vw, 58px);
+  background:
+    linear-gradient(180deg, rgba(9, 12, 24, 0.84), rgba(9, 10, 18, 0.94)),
+    radial-gradient(circle at 12% 0%, rgba(244, 196, 222, 0.18), transparent 26%),
+    radial-gradient(circle at 88% 22%, rgba(166, 134, 214, 0.12), transparent 30%);
+  box-shadow:
+    0 30px 100px rgba(0, 0, 0, 0.48),
+    inset 0 0 0 1px rgba(255, 241, 210, 0.08),
+    inset 0 0 90px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+.art-shell::before,
+.art-shell::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  width: 170px;
+  height: 170px;
+  border: 1px solid rgba(222, 184, 128, 0.42);
+}
+.art-shell::before {
+  top: 13px;
+  left: 13px;
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 18px 0 0 0;
+  box-shadow: 22px 22px 0 -21px rgba(222, 184, 128, 0.45);
+}
+.art-shell::after {
+  right: 13px;
+  bottom: 13px;
+  border-left: 0;
+  border-top: 0;
+  border-radius: 0 0 18px 0;
+  box-shadow: -22px -22px 0 -21px rgba(222, 184, 128, 0.45);
+}
+
+.top-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(241, 220, 188, 0.82);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  margin: 0 0 18px;
+}
+
+.chapter-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.72fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: start;
+  margin-bottom: 36px;
+}
+.chapter-kicker {
+  text-align: center;
+  color: #f0d9b0;
+  font-family: "Zen Old Mincho", serif;
+  font-size: 18px;
+  letter-spacing: 0.22em;
+  margin-bottom: 2px;
+}
+.chapter-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 0;
+  color: #f0d7aa;
+  font-family: "Zen Old Mincho", serif;
+  font-size: clamp(38px, 5.2vw, 64px);
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  line-height: 1.2;
+  text-shadow: 0 0 24px rgba(238, 205, 156, 0.22);
+}
+.chapter-title::before,
+.chapter-title::after {
+  content: "";
+  width: min(110px, 12vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(230, 190, 130, 0.76), transparent);
+}
+.chapter-subtitle {
+  text-align: center;
+  color: rgba(240, 217, 176, 0.92);
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  margin-top: 4px;
+}
+
+.intro-copy,
+.section-copy,
+.compat-desc,
+.compat-advice {
+  color: rgba(255, 248, 237, 0.9);
+  font-size: clamp(14px, 1.28vw, 16px);
+  letter-spacing: 0.08em;
+  text-align: justify;
+  text-wrap: pretty;
+}
+.intro-copy p,
+.section-copy p {
+  margin: 0 0 1.2em;
+}
+
+.essence-panel {
+  position: relative;
+  padding: 30px 28px 28px;
+  border-left: 1px solid rgba(222, 184, 128, 0.34);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(231, 200, 151, 0.12), transparent 46%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+  min-height: 260px;
+}
+.essence-sigil {
+  width: 86px;
+  height: 86px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(234, 207, 166, 0.48);
+  display: grid;
+  place-items: center;
+  color: #f0d9b0;
+  background:
+    radial-gradient(circle, rgba(244, 219, 188, 0.16), transparent 62%),
+    conic-gradient(from 0deg, transparent, rgba(235, 211, 178, 0.24), transparent 22%, transparent);
+  box-shadow: 0 0 40px rgba(233, 190, 150, 0.12);
+}
+.essence-sigil svg { width: 54px; height: 54px; }
+.essence-label {
+  color: rgba(240, 217, 176, 0.78);
+  text-align: center;
+  letter-spacing: 0.22em;
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+.essence-quote {
+  color: #f1d7b1;
+  font-family: "Zen Old Mincho", serif;
+  font-size: clamp(28px, 3.2vw, 44px);
+  letter-spacing: 0.16em;
+  line-height: 1.75;
+  text-align: center;
+  margin: 0;
+}
+
+.hero-plate {
+  position: relative;
+  margin: 34px 0 40px;
+  padding: 10px;
+  border: 1px solid rgba(224, 184, 124, 0.76);
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(244, 219, 188, 0.14), rgba(205, 174, 234, 0.07));
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+.hero-plate::before,
+.hero-plate::after,
+.image-plate::before,
+.image-plate::after {
+  content: "✦";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #e8c995;
+  text-shadow: 0 0 14px rgba(236, 201, 145, 0.34);
+  font-size: 18px;
+  z-index: 2;
+}
+.hero-plate::before,
+.image-plate::before { top: -18px; }
+.hero-plate::after,
+.image-plate::after { bottom: -18px; }
+.hero-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #0b0d16;
+}
+.hero-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hero-frame::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 38%;
+  background: linear-gradient(180deg, transparent, rgba(7, 9, 18, 0.72));
+}
+.hero-caption {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 5.5%;
+  z-index: 2;
+  margin: 0;
+  color: #f2d9b2;
+  font-family: "Zen Old Mincho", serif;
+  font-size: clamp(24px, 3vw, 44px);
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.62);
+}
+
+.section {
+  position: relative;
+  padding: 60px 0 18px;
+}
+.section::before {
+  content: "";
+  display: block;
+  height: 1px;
+  margin: 0 auto 44px;
+  width: min(760px, 86%);
+  background: linear-gradient(90deg, transparent, rgba(226, 185, 126, 0.58), transparent);
+}
+.section-head {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.section-number {
+  color: #f0d9b0;
+  font-family: "Zen Old Mincho", serif;
+  font-size: 17px;
+  letter-spacing: 0.22em;
+}
+.section-title {
+  margin: 0;
+  color: #f0d7aa;
+  font-family: "Zen Old Mincho", serif;
+  font-size: clamp(32px, 4.4vw, 54px);
+  letter-spacing: 0.22em;
+}
+.section-title-en {
+  margin-top: 3px;
+  color: rgba(240, 217, 176, 0.86);
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+}
+.section-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(24px, 4vw, 52px);
+  align-items: start;
+}
+.section-layout.reverse {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+}
+.section-layout.reverse .section-copy { order: 2; }
+.section-layout.reverse .image-plate { order: 1; }
+
+.image-plate {
+  position: relative;
+  padding: 8px;
+  border: 1px solid rgba(224, 184, 124, 0.54);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.34);
+}
+.image-plate img {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+}
+.image-note {
+  color: rgba(240, 217, 176, 0.72);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.traits {
+  margin-top: 34px;
+}
+.block-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #f0d7aa;
+  font-family: "Zen Old Mincho", serif;
+  font-size: 24px;
+  letter-spacing: 0.14em;
+  margin: 0 0 20px;
+}
+.block-title::before {
+  content: "✧";
+  color: #d9b57b;
+}
+.trait-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.trait-card {
+  position: relative;
+  min-height: 176px;
+  padding: 18px 14px 16px;
+  border: 1px solid rgba(222, 184, 128, 0.34);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(240, 207, 176, 0.12), transparent 54%),
+    rgba(255, 255, 255, 0.03);
+}
+.ring {
+  --pct: 50;
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, #101320 0 52%, transparent 54%),
+    conic-gradient(#e8c995 calc(var(--pct) * 1%), rgba(234, 210, 183, 0.16) 0);
+  box-shadow: 0 0 22px rgba(228, 190, 141, 0.16);
+}
+.ring span {
+  color: #fff7ea;
+  font-family: "Zen Old Mincho", serif;
+  font-size: 19px;
+}
+.trait-name {
+  color: #f1d7b1;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.trait-desc {
+  color: rgba(255, 248, 237, 0.78);
+  font-size: 12px;
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+}
+
+.sw-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 28px;
+}
+.sw-block {
+  border: 1px solid rgba(222, 184, 128, 0.3);
+  background: rgba(255,255,255,0.026);
+  padding: 18px;
+}
+.sw-heading {
+  color: #f0d7aa;
+  font-family: "Zen Old Mincho", serif;
+  font-size: 21px;
+  letter-spacing: 0.12em;
+  margin-bottom: 14px;
+}
+.sw-item {
+  padding: 13px 0;
+  border-top: 1px solid rgba(222, 184, 128, 0.18);
+}
+.sw-item:first-of-type { border-top: 0; }
+.sw-name {
+  color: #fff1dc;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 3px;
+}
+.sw-desc {
+  color: rgba(255, 248, 237, 0.76);
+  font-size: 13px;
+  line-height: 1.75;
+  letter-spacing: 0.055em;
+}
+
+.compat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.compat-col {
+  border: 1px solid rgba(222, 184, 128, 0.3);
+  padding: 20px;
+  background: rgba(255,255,255,0.024);
+}
+.compat-card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 14px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(222, 184, 128, 0.18);
+}
+.compat-card:first-of-type { border-top: 0; }
+.compat-card img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(240, 217, 176, 0.58);
+}
+.compat-name {
+  color: #fff1dc;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.compat-relation {
+  display: inline-block;
+  color: #f0d7aa;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  margin: 2px 0 8px;
+}
+.compat-desc,
+.compat-advice {
+  font-size: 13px;
+  line-height: 1.72;
+  letter-spacing: 0.055em;
+}
+.compat-advice {
+  color: rgba(245, 218, 190, 0.78);
+  margin-top: 8px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(222, 184, 128, 0.28);
+}
+
+.footer {
+  text-align: center;
+  color: rgba(240, 217, 176, 0.72);
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  padding: 52px 0 0;
+}
+
+.loading,
+.error {
+  padding: 90px 20px;
+  text-align: center;
+  color: #f0d7aa;
+  letter-spacing: 0.16em;
+}
+
+@media (max-width: 900px) {
+  .page { width: min(100% - 24px, 720px); padding-top: 12px; }
+  .art-shell { padding: 24px 16px 46px; }
+  .chapter-head,
+  .section-layout,
+  .section-layout.reverse,
+  .compat-grid,
+  .sw-wrap {
+    grid-template-columns: 1fr;
+  }
+  .section-layout.reverse .section-copy,
+  .section-layout.reverse .image-plate { order: initial; }
+  .essence-panel { border-left: 0; border-top: 1px solid rgba(222, 184, 128, 0.28); }
+  .trait-grid { grid-template-columns: 1fr 1fr; }
+  .hero-caption { font-size: 22px; letter-spacing: 0.08em; }
+}
+
+@media (max-width: 560px) {
+  body::before { padding: 10px; }
+  .chapter-title { letter-spacing: 0.12em; gap: 10px; }
+  .chapter-title::before,
+  .chapter-title::after { width: 44px; }
+  .intro-copy,
+  .section-copy { font-size: 14px; letter-spacing: 0.04em; text-align: left; }
+  .trait-grid { grid-template-columns: 1fr; }
+  .hero-plate { margin-left: -8px; margin-right: -8px; }
+  .hero-caption { position: static; padding: 16px 8px 6px; background: #0b0d16; }
+}
+</style>
+</head>
+<body>
+<div class="petals" aria-hidden="true">
+  <i style="--x:7%;--s:16px;--d:24s;--delay:-2s;--drift:58px"></i>
+  <i style="--x:16%;--s:10px;--d:19s;--delay:-7s;--drift:40px"></i>
+  <i style="--x:28%;--s:14px;--d:27s;--delay:-11s;--drift:78px"></i>
+  <i style="--x:40%;--s:9px;--d:21s;--delay:-3s;--drift:50px"></i>
+  <i style="--x:52%;--s:13px;--d:25s;--delay:-15s;--drift:62px"></i>
+  <i style="--x:66%;--s:11px;--d:23s;--delay:-9s;--drift:44px"></i>
+  <i style="--x:78%;--s:17px;--d:29s;--delay:-13s;--drift:86px"></i>
+  <i style="--x:91%;--s:12px;--d:20s;--delay:-5s;--drift:52px"></i>
+</div>
+
+<main class="page">
+  <a class="top-link" href="result.html?type=INFJ-A&self=1">試作元の結果ページへ</a>
+  <article class="art-shell" id="app">
+    <div class="loading">聖女のアートブックページを組版しています</div>
+  </article>
+</main>
+
+<script>
+const TYPE_ID = "INFJ-A";
+const TYPE_NAME = "聖女";
+const BASE = "挿絵/聖女/";
+const sectionMeta = {
+  personality: { no: "01", title: "性格特性", en: "PERSONALITY TRAITS", image: `${BASE}聖女_INFJ-A_1.png`, note: "静けさの奥で、信念は育つ。" },
+  career: { no: "02", title: "キャリアパス", en: "CAREER PATH", image: `${BASE}聖女_INFJ-A_2.png`, note: "理想を、現実に届く形へ。" },
+  relationships: { no: "03", title: "人間関係", en: "RELATIONSHIPS", image: `${BASE}聖女_INFJ-A_3.png`, note: "言葉になる前の揺れを、そっと受け止める。" },
+  growth: { no: "04", title: "自己成長", en: "GROWTH", image: `${BASE}聖女_INFJ-A_4.png`, note: "救う手を、自分自身にも向ける。" }
+};
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, s => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  }[s]));
+}
+
+function paragraph(text) {
+  return `<p>${esc(text)}</p>`;
+}
+
+function splitIntro(text) {
+  return String(text || "").split(/\n+/).filter(Boolean).map(paragraph).join("");
+}
+
+function imagePlate(src, note, alt) {
+  return `
+    <figure class="image-plate">
+      <img src="${esc(src)}" alt="${esc(alt)}">
+      <figcaption class="image-note">${esc(note)}</figcaption>
+    </figure>`;
+}
+
+function renderDescription(section, key) {
+  const meta = sectionMeta[key];
+  let imageInserted = false;
+  const parts = [];
+  for (const item of section.description || []) {
+    if (item === "__ILLUST__") {
+      parts.push(imagePlate(meta.image, meta.note, `${TYPE_NAME} ${meta.title}`));
+      imageInserted = true;
+    } else {
+      parts.push(paragraph(item));
+    }
+  }
+  return { html: parts.join(""), imageInserted };
+}
+
+function renderTraits(traits) {
+  if (!traits || !traits.length) return "";
+  return `
+    <div class="traits">
+      <h3 class="block-title">聖女の主な特徴</h3>
+      <div class="trait-grid">
+        ${traits.map(t => `
+          <div class="trait-card">
+            <div class="ring" style="--pct:${Number(t.value) || 0}"><span>${esc(t.value)}%</span></div>
+            <div class="trait-name">${esc(t.name)}</div>
+            <div class="trait-desc">${esc(t.description)}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>`;
+}
+
+function renderSwBlock(title, items) {
+  if (!items || !items.length) return "";
+  return `
+    <div class="sw-block">
+      <div class="sw-heading">${esc(title)}</div>
+      ${items.map(item => `
+        <div class="sw-item">
+          <div class="sw-name">${esc(item.name)}</div>
+          <div class="sw-desc">${esc(item.description)}</div>
+        </div>
+      `).join("")}
+    </div>`;
+}
+
+function renderSection(section, key, index) {
+  if (!section) return "";
+  const meta = sectionMeta[key];
+  const desc = renderDescription(section, key);
+  const image = desc.imageInserted ? "" : imagePlate(meta.image, meta.note, `${TYPE_NAME} ${meta.title}`);
+  const reverse = index % 2 === 1 ? " reverse" : "";
+  return `
+    <section class="section" id="${key}">
+      <header class="section-head">
+        <div class="section-number">${meta.no}</div>
+        <h2 class="section-title">${meta.title}</h2>
+        <div class="section-title-en">${meta.en}</div>
+      </header>
+      <div class="section-layout${reverse}">
+        <div class="section-copy">${desc.html}</div>
+        ${image}
+      </div>
+      ${key === "personality" ? renderTraits(section.traits) : ""}
+      <div class="sw-wrap">
+        ${renderSwBlock("得意スキル", section.skills)}
+        ${renderSwBlock("弱点傾向", section.sideEffects)}
+      </div>
+    </section>`;
+}
+
+function renderCompat(data, allData) {
+  const compat = data.compat;
+  if (!compat || (!compat.good && !compat.bad)) return "";
+  const byId = Object.fromEntries(allData.map(d => [d.id, d]));
+  const renderList = (items = []) => items.map(c => {
+    const target = byId[c.target] || { id: c.target, name: c.target };
+    const face = `挿絵/${target.name}/${target.name}_${target.id}_face.png`;
+    const hero = `挿絵/${target.name}/${target.name}_${target.id}_hero.png`;
+    return `
+      <div class="compat-card">
+        <img src="${esc(face)}" alt="" onerror="this.onerror=null;this.src='${esc(hero)}';">
+        <div>
+          <div class="compat-name">${esc(target.name)} <span>${esc(target.id)}</span></div>
+          <span class="compat-relation">${esc(c.relation || "")}</span>
+          <div class="compat-desc">${esc(c.desc || "")}</div>
+          ${c.advice ? `<div class="compat-advice">${esc(c.advice)}</div>` : ""}
+        </div>
+      </div>`;
+  }).join("");
+  return `
+    <section class="section" id="compat">
+      <header class="section-head">
+        <div class="section-number">05</div>
+        <h2 class="section-title">相性</h2>
+        <div class="section-title-en">COMPATIBILITY</div>
+      </header>
+      <div class="compat-grid">
+        <div class="compat-col">
+          <h3 class="block-title">惹かれ合う相手</h3>
+          ${renderList(compat.good)}
+        </div>
+        <div class="compat-col">
+          <h3 class="block-title">気をつけたい相手</h3>
+          ${renderList(compat.bad)}
+        </div>
+      </div>
+    </section>`;
+}
+
+function sigil() {
+  return `
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="50" cy="50" r="22"/>
+        <circle cx="50" cy="50" r="34" opacity=".42"/>
+        <path d="M50 9v82M9 50h82M21 21l58 58M79 21L21 79" opacity=".38"/>
+        <path d="M50 18c8 15 8 49 0 64c-8-15-8-49 0-64Z" fill="currentColor" opacity=".18"/>
+        <path d="M18 50c15-8 49-8 64 0c-15 8-49 8-64 0Z" fill="currentColor" opacity=".12"/>
+      </g>
+    </svg>`;
+}
+
+function render(data, allData) {
+  const sections = data.sections || {};
+  const intro = splitIntro(data.introduction);
+  const hero = `${BASE}聖女_INFJ-A_hero.png`;
+  return `
+    <header class="chapter-head">
+      <div>
+        <div class="chapter-kicker">01</div>
+        <h1 class="chapter-title">性格特性</h1>
+        <div class="chapter-subtitle">PERSONALITY TRAITS</div>
+        <div class="intro-copy" style="margin-top:30px">${intro}</div>
+      </div>
+      <aside class="essence-panel">
+        <div class="essence-sigil">${sigil()}</div>
+        <div class="essence-label">聖女の本質</div>
+        <p class="essence-quote">静けさの中で、<br>信念は育つ。</p>
+      </aside>
+    </header>
+
+    <figure class="hero-plate">
+      <div class="hero-frame">
+        <img src="${hero}" alt="聖女 INFJ-A">
+        <figcaption class="hero-caption">光は、静かな者の中で、最も深く届く。</figcaption>
+      </div>
+    </figure>
+
+    ${renderSection(sections.personality, "personality", 0)}
+    ${renderSection(sections.career, "career", 1)}
+    ${renderSection(sections.relationships, "relationships", 2)}
+    ${renderSection(sections.growth, "growth", 3)}
+    ${renderCompat(data, allData)}
+
+    <footer class="footer">NANIMONO / INFJ-A / ARTBOOK TRIAL</footer>
+  `;
+}
+
+(async () => {
+  const app = document.getElementById("app");
+  try {
+    const res = await fetch("nanimono_data.json?v=" + Date.now());
+    if (!res.ok) throw new Error(`data load failed: ${res.status}`);
+    const allData = await res.json();
+    const data = allData.find(item => item.id === TYPE_ID);
+    if (!data) throw new Error("INFJ-A data was not found");
+    app.innerHTML = render(data, allData);
+  } catch (error) {
+    app.innerHTML = `<div class="error">読み込みに失敗しました<br>${esc(error.message)}</div>`;
+  }
+})();
+</script>
+</body>
+</html>

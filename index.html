@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ナニモノ - 性格診断</title>
+<link rel="icon" href="挿絵/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="挿絵/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="挿絵/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="挿絵/favicon-180.png">
+<meta name="description" content="32の人格。あなたは、何者か。40の問いに答えて、あなたの中に眠る人格を映し出す。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ナニモノ — あなたの中に眠る人格を映し出す">
+<meta property="og:description" content="32の人格。あなたは、何者か。">
+<meta property="og:image" content="https://glittery-palmier-a967b9.netlify.app/%E6%8C%BF%E7%B5%B5/_ogp.jpg">
+<meta property="og:url" content="https://glittery-palmier-a967b9.netlify.app/">
+<meta property="og:site_name" content="ナニモノ">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ナニモノ — あなたの中に眠る人格を映し出す">
+<meta name="twitter:description" content="32の人格。あなたは、何者か。">
+<meta name="twitter:image" content="https://glittery-palmier-a967b9.netlify.app/%E6%8C%BF%E7%B5%B5/_ogp.jpg">
+<link rel="preload" as="image" href="挿絵/_top_hero.webp">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;500;700&family=Zen+Old+Mincho:wght@400;500;700&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  color: #3a2a55;
+  background: #f5f3f7;
+  min-height: 100vh;
+}
+body.quiz-active {
+  background: url('挿絵/_bg_quiz.webp') center/cover no-repeat fixed, #ede4ee;
+}
+@media (max-width: 900px) {
+  body.quiz-active { background: url('挿絵/_bg_quiz_sp.webp') center bottom/cover no-repeat fixed, #ede4ee; }
+}
+
+.container { max-width: 780px; margin: 0 auto; padding: 20px; }
+
+/* スタート画面（ヒーロー） */
+#start {
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 0 42%;
+  aspect-ratio: 16 / 9;
+  width: min(1500px, 92vw);
+  max-height: 95vh;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: calc(50% - min(750px, 46vw) - 20px);
+  margin-right: calc(50% - min(750px, 46vw) - 20px);
+  background-image: url('挿絵/_top_hero.webp');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #faf7fb;
+  border-radius: 16px;
+  overflow: hidden;
+}
+#start::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(245,240,250,0.0) 0%, rgba(245,240,250,0.15) 100%);
+  pointer-events: none;
+}
+#start > * { position: relative; z-index: 1; }
+#start h1 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 56px;
+  letter-spacing: 16px;
+  font-weight: 500;
+  margin-bottom: 14px;
+  color: #4a3a6a;
+  text-shadow: 0 2px 12px rgba(255,255,255,0.6);
+}
+#start p {
+  color: #6a5a8a;
+  margin-bottom: 48px;
+  font-size: 13px;
+  letter-spacing: 4px;
+  font-family: 'Noto Serif JP', serif;
+}
+#start button {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 8px 44px;
+  transform: translateX(2%);
+  font-size: 24px;
+  color: #5a4880;
+  letter-spacing: 0.35em;
+  font-family: 'Zen Old Mincho', serif;
+  font-weight: 300;
+  line-height: 2.0;
+  text-indent: 0.35em;
+  font-feature-settings: "palt";
+  cursor: pointer;
+  transition: all 0.25s;
+  text-shadow: 0 1px 8px rgba(255,255,255,0.6);
+}
+#start button::before {
+  content: '';
+  position: absolute;
+  inset: -80%;
+  background: radial-gradient(ellipse at center,
+    rgba(255,250,235,0.9) 0%,
+    rgba(247,231,206,0.8) 10%,
+    rgba(235,215,210,0.55) 25%,
+    rgba(210,185,220,0.4) 45%,
+    rgba(168,140,200,0.2) 65%,
+    rgba(124,92,191,0) 80%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: scale(0.6);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(4px);
+  mix-blend-mode: screen;
+}
+#start button::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle at center, rgba(255,250,240,0.85) 0%, rgba(247,231,206,0.5) 30%, rgba(247,231,206,0) 60%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: scale(0.5);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(2px);
+  mix-blend-mode: screen;
+}
+#start button:hover::before,
+#start button:active::before,
+#start button:focus::before {
+  opacity: 1;
+  transform: scale(1.2);
+  animation: coronaPulse 3s ease-in-out infinite;
+}
+#start button:hover::after,
+#start button:active::after,
+#start button:focus::after {
+  opacity: 1;
+  transform: scale(1);
+}
+@keyframes buttonGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 16px rgba(255, 240, 200, 0.6),
+      0 0 32px rgba(255, 220, 170, 0.35),
+      0 0 56px rgba(216, 184, 130, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 24px rgba(255, 245, 215, 0.9),
+      0 0 48px rgba(255, 225, 175, 0.6),
+      0 0 80px rgba(216, 184, 130, 0.45);
+  }
+}
+@keyframes coronaPulse {
+  0%, 100% { transform: scale(1.2); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.85; }
+}
+#start button:hover,
+#start button:active,
+#start button:focus {
+  color: #7c5cbf;
+  text-shadow:
+    0 0 6px rgba(255,255,255,0.9),
+    0 0 16px rgba(255,255,255,0.6),
+    0 0 32px rgba(168,124,207,0.4);
+  outline: none;
+}
+
+
+@media (min-width: 901px) {
+  #lastResult { margin: -300px 0 40px -5% !important; }
+}
+@media (max-width: 900px) {
+  body:not(.quiz-active) .container { padding: 0; max-width: none; }
+  body:not(.quiz-active) #lastResult { margin-bottom: 0 !important; }
+  html:has(body:not(.quiz-active)) { overflow: hidden; height: 100dvh; }
+  body:not(.quiz-active) { min-height: 100dvh; height: 100dvh; overflow: hidden; }
+  #start {
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    aspect-ratio: auto;
+    min-height: 100vh;
+    height: 100vh;
+    background-image: url('挿絵/_top_hero_sp.webp');
+    background-size: cover;
+    background-position: center bottom;
+    background-color: #e8d8ee;
+    border-radius: 0;
+    justify-content: flex-end;
+  }
+  #start button br { display: none; }
+  #start button {
+    padding: 5px 12px !important;
+    min-width: 0 !important;
+    width: auto !important;
+    font-size: 12px !important;
+    letter-spacing: 0.25em !important;
+    margin-bottom: 76% !important;
+    text-indent: 0.25em !important;
+    line-height: 1.3 !important;
+    transform: translateX(3%);
+    color: #7c5cbf;
+    border: 1px solid rgba(184, 152, 92, 0.65) !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+    box-shadow:
+      0 0 16px rgba(255, 240, 200, 0.7),
+      0 0 32px rgba(255, 220, 170, 0.45),
+      0 0 56px rgba(216, 184, 130, 0.3);
+    animation: buttonGlow 2.8s ease-in-out infinite;
+    text-shadow:
+      0 0 6px rgba(255,255,255,0.9),
+      0 0 16px rgba(255,255,255,0.6),
+      0 0 32px rgba(168,124,207,0.4);
+  }
+  #start button::before {
+    opacity: 1;
+    transform: scale(1.2);
+    animation: coronaPulse 3s ease-in-out infinite;
+  }
+  #start button::after {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* イントロモーダル（ニックネーム＋生年月日入力） */
+#introModal {
+  position: fixed; inset: 0; z-index: 1000;
+  display: none;
+  align-items: center; justify-content: center;
+  background: rgba(20, 14, 32, 0.72);
+  backdrop-filter: blur(6px);
+  animation: introFade 0.4s ease;
+  padding: 16px;
+}
+/* モバイルはbackdrop-filterのタップ死バグ回避でblur切る（背景は不透明寄りに） */
+@media (max-width: 700px) {
+  #introModal {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(20, 14, 32, 0.88);
+  }
+}
+@keyframes introFade { from { opacity: 0; } to { opacity: 1; } }
+.intro-card {
+  background: linear-gradient(180deg, #f3e9d2 0%, #faf5ec 100%);
+  border: 1px solid rgba(184, 152, 92, 0.55);
+  border-radius: 18px;
+  padding: 36px 32px 28px;
+  width: min(420px, 88vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255, 240, 200, 0.3) inset;
+  font-family: 'Zen Old Mincho', serif;
+  text-align: center;
+  color: #4a3a6a;
+}
+.intro-card h2 {
+  font-size: 22px; letter-spacing: 0.3em; margin: 0 0 6px;
+  font-weight: 500;
+}
+.intro-card .intro-sub {
+  font-size: 12px; letter-spacing: 0.2em; color: #8b7a5c;
+  margin: 0 0 26px;
+}
+.intro-field { margin-bottom: 18px; text-align: left; }
+.intro-field label {
+  display: block; font-size: 12px; letter-spacing: 0.18em;
+  color: #6a5a8a; margin-bottom: 8px;
+}
+.intro-field .intro-optional { color: #b8985c; font-size: 10px; margin-left: 6px; }
+.intro-field input[type=text] {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid rgba(184, 152, 92, 0.4);
+  border-radius: 8px;
+  background: rgba(255, 252, 245, 0.7);
+  font-size: 15px;
+  font-family: inherit;
+  color: #4a3a6a;
+  box-sizing: border-box;
+}
+.intro-field input[type=text]:focus {
+  outline: none;
+  border-color: #b8985c;
+  background: #fff;
+}
+.intro-date { display: flex; gap: 8px; }
+.intro-gender { display: flex; gap: 8px; }
+.intro-gender .gender-opt {
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+}
+.intro-gender .gender-opt input { position: absolute; opacity: 0; pointer-events: none; }
+.intro-gender .gender-opt span {
+  display: block;
+  padding: 10px 8px;
+  text-align: center;
+  border: 1px solid rgba(184, 152, 92, 0.4);
+  border-radius: 8px;
+  background: rgba(255, 252, 245, 0.7);
+  font-size: 13px;
+  color: #6a5a8a;
+  letter-spacing: 0.15em;
+  transition: all 0.2s;
+}
+.intro-gender .gender-opt input:checked + span {
+  background: linear-gradient(180deg, #f3e2a8 0%, #d9b96f 100%);
+  border-color: #b8985c;
+  color: #4a3a2f;
+  font-weight: 500;
+  box-shadow: 0 0 8px rgba(216, 184, 130, 0.4) inset;
+}
+/* ドラム式ホイールピッカー（LINE内蔵ブラウザでも動く自前実装） */
+.wheel-date {
+  position: relative;
+  display: flex;
+  gap: 6px;
+  background: rgba(255, 252, 245, 0.92);
+  border: 1px solid rgba(184, 152, 92, 0.4);
+  border-radius: 10px;
+  padding: 4px 8px;
+  overflow: hidden;
+}
+.wheel-col { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; }
+.wheel-col:first-child { flex: 1.4; }
+.wheel-unit {
+  position: absolute; right: 2px; top: 50%; transform: translateY(-50%);
+  font-size: 11px; color: #b8985c; pointer-events: none; z-index: 4;
+}
+.wheel {
+  --item-h: 34px;
+  height: calc(var(--item-h) * 3);
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 2;
+}
+.wheel::-webkit-scrollbar { display: none; }
+.wheel-item {
+  height: var(--item-h);
+  line-height: var(--item-h);
+  text-align: center;
+  scroll-snap-align: center;
+  font-size: 17px;
+  font-family: inherit;
+  color: #b3a488;
+  opacity: 0.55;
+}
+.wheel-item.center { color: #4a3a2f; font-weight: 600; opacity: 1; }
+.wheel-pad { height: var(--item-h); scroll-snap-align: none; }
+/* 中央セレクションバンド */
+.wheel-mask {
+  position: absolute; left: 0; right: 0; top: 50%;
+  height: 34px; transform: translateY(-50%);
+  border-top: 1px solid rgba(184, 152, 92, 0.55);
+  border-bottom: 1px solid rgba(184, 152, 92, 0.55);
+  background: rgba(216, 184, 130, 0.08);
+  pointer-events: none; z-index: 3;
+}
+/* 上下フェード */
+.wheel-date::before, .wheel-date::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 34px; pointer-events: none; z-index: 3;
+}
+.wheel-date::before { top: 0; background: linear-gradient(180deg, rgba(250,245,236,0.95), rgba(250,245,236,0)); }
+.wheel-date::after { bottom: 0; background: linear-gradient(0deg, rgba(250,245,236,0.95), rgba(250,245,236,0)); }
+.intro-btn {
+  position: relative;
+  width: 100%; margin-top: 18px;
+  padding: 14px;
+  background: transparent;
+  color: #6a5a3f;
+  border: 1px solid rgba(184, 152, 92, 0.7);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 0.35em;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, color 0.2s;
+  text-indent: 0.35em;
+  box-shadow:
+    0 0 12px rgba(216, 184, 130, 0.25),
+    0 0 24px rgba(216, 184, 130, 0.15);
+}
+.intro-btn:hover {
+  color: #4a3a2f;
+  box-shadow:
+    0 0 16px rgba(255, 240, 200, 0.5),
+    0 0 32px rgba(216, 184, 130, 0.3);
+  transform: translateY(-1px);
+}
+.intro-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(184,152,92,0.4); }
+.intro-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.intro-note {
+  font-size: 10px; color: #a08660; letter-spacing: 0.1em;
+  margin-top: 14px; line-height: 1.6;
+}
+
+/* 質問画面 */
+#quiz { display: none; }
+.quiz-header { text-align: center; padding: 40px 0 24px; }
+.quiz-brand { font-family: 'Zen Old Mincho', serif; font-size: 32px; letter-spacing: 0.5em; color: #4a3a6a; font-weight: 400; padding-left: 0.5em; margin-bottom: 12px; }
+.quiz-tagline { font-family: 'Zen Old Mincho', serif; font-size: 13px; letter-spacing: 0.3em; color: #6a5a8a; padding-left: 0.3em; }
+.quiz-divider { color: #b8985c; font-size: 14px; margin-top: 20px; opacity: 0.7; }
+.progress-sticky { position: sticky; top: 0; background: rgba(244,238,246,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 14px 0 12px; margin-bottom: 16px; z-index: 50; }
+.progress-label { font-family: 'Zen Old Mincho', serif; color: #b8985c; letter-spacing: 0.25em; }
+.progress-text { text-align: center; color: #6a5a8a; font-size: 14px; margin-bottom: 10px; letter-spacing: 0.3em; font-family: 'Zen Old Mincho', serif; }
+.progress-label { color: #c4a878; font-weight: 500; text-shadow: 0 0 8px rgba(216,201,168,0.4); }
+.progress { background: rgba(168,124,207,0.15); border-radius: 6px; height: 6px; overflow: hidden; max-width: 360px; margin: 0 auto; box-shadow: inset 0 1px 2px rgba(0,0,0,0.08); }
+.progress-bar { height: 100%; background: linear-gradient(90deg, #a87ccf, #d8c9a8, #e8d8b8); transition: width 0.6s cubic-bezier(.2,.7,.2,1); border-radius: 6px; box-shadow: 0 0 12px rgba(216,201,168,0.6), 0 0 4px rgba(168,124,207,0.4); }
+@keyframes progressShimmer { 0% { background-position: 200% 0; } 100% { background-position: 0% 0; } }
+.progress-bar { position: relative; overflow: hidden; }
+.progress-bar::before { content:''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,245,210,0.4), rgba(255,235,180,0.95), rgba(255,245,210,0.4), transparent); background-size: 200% 100%; opacity: 0; border-radius: 6px; pointer-events: none; }
+.progress-bar.kirari::before { animation: champagneFlow 1.0s ease-out; }
+@keyframes champagneFlow {
+  0% { opacity: 0; background-position: -50% 0; }
+  30% { opacity: 1; }
+  70% { opacity: 1; background-position: 150% 0; }
+  100% { opacity: 0; background-position: 150% 0; }
+}
+.progress-bar::after { content:''; position: absolute; top: 50%; right: -6px; width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle, #fff, rgba(255,235,180,0.9) 30%, transparent 70%); transform: translateY(-50%); opacity: 0; pointer-events: none; box-shadow: 0 0 30px 10px rgba(255,235,180,0.8), 0 0 60px 20px rgba(196,168,120,0.5); }
+.progress-bar.kirari::after { animation: progressTipFlash 0.9s ease-out; }
+@keyframes progressTipFlash {
+  0% { opacity: 0; transform: translateY(-50%) scale(0.3); box-shadow: 0 0 0 0 rgba(255,235,180,1), 0 0 0 0 rgba(196,168,120,0.8); }
+  30% { opacity: 1; transform: translateY(-50%) scale(2); box-shadow: 0 0 40px 16px rgba(255,235,180,1), 0 0 80px 30px rgba(255,215,140,0.7); }
+  60% { opacity: 0.8; transform: translateY(-50%) scale(3); box-shadow: 0 0 80px 28px rgba(255,235,180,0.6), 0 0 140px 50px rgba(196,168,120,0.4); }
+  100% { opacity: 0; transform: translateY(-50%) scale(4.5); box-shadow: 0 0 160px 60px rgba(255,235,180,0), 0 0 220px 80px rgba(196,168,120,0); }
+}
+
+.question-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,245,235,0.2) 50%, rgba(220,210,235,0.3) 100%);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-radius: 14px;
+  padding: 28px 24px;
+  margin-bottom: 14px;
+  box-shadow:
+    0 8px 32px rgba(124,92,191,0.08),
+    0 1px 0 rgba(255,255,255,0.8) inset,
+    0 -1px 0 rgba(196,168,120,0.1) inset;
+  transition: all 0.4s;
+  border: 1px solid rgba(255,255,255,0.4);
+}
+.question-card.answered { opacity: 0.55; border: 1px solid rgba(196,168,120,0.45); }
+.question-card.answered:hover { opacity: 1; }
+.question-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
+.question-num {
+  color: #b8985c;
+  font-family: 'Zen Old Mincho', serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.question-text {
+  font-size: 16px; line-height: 1.7; color: #3a2a55; font-weight: 400;
+}
+
+.options-row { display: flex; align-items: center; gap: 0; justify-content: center; }
+.scale-label { font-size: 12px; color: #8a7aa0; white-space: nowrap; width: 120px; font-family: 'Zen Old Mincho', serif; letter-spacing: 0.08em; }
+.scale-label.left { text-align: right; padding-right: 16px; }
+.scale-label.right { text-align: left; padding-left: 16px; }
+.options { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.option { border-radius: 50%; cursor: pointer; transition: all 0.2s; border: 2.5px solid #ddd; flex-shrink: 0; background: rgba(255,255,255,0.6); box-shadow: 0 2px 8px rgba(124,92,191,0.08); position: relative; }
+.option.kirari::after { content:''; position:absolute; inset:-8px; border-radius:50%; pointer-events:none; box-shadow: 0 0 0 0 rgba(255,235,180,0.9), 0 0 0 0 rgba(196,168,120,0.6); animation: kirariFlash 0.7s ease-out; }
+@keyframes kirariFlash {
+  0% { box-shadow: 0 0 0 0 rgba(255,235,180,0.95), 0 0 0 0 rgba(196,168,120,0.8); opacity: 1; }
+  50% { box-shadow: 0 0 24px 8px rgba(255,235,180,0.6), 0 0 40px 16px rgba(196,168,120,0.3); opacity: 1; }
+  100% { box-shadow: 0 0 60px 20px rgba(255,235,180,0), 0 0 80px 30px rgba(196,168,120,0); opacity: 0; }
+}
+.option.s1 { width: 44px; height: 44px; }
+.option.s2 { width: 38px; height: 38px; }
+.option.s3 { width: 32px; height: 32px; }
+.option.s4 { width: 26px; height: 26px; }
+.option:hover { transform: scale(1.15); }
+
+
+.option.c1 { border-color: #9b59b6; }
+.option.c1:hover { background: rgba(155,89,182,0.15); }
+.option.c1.selected { background: radial-gradient(circle at 35% 30%, #c8a0e0 0%, #9b59b6 50%, #6a3e8e 100%); border-color: #9b59b6; box-shadow: 0 0 16px rgba(155,89,182,0.6), inset 0 0 8px rgba(255,255,255,0.3); }
+
+.option.c2 { border-color: #b07cc5; }
+.option.c2:hover { background: rgba(176,124,197,0.15); }
+.option.c2.selected { background: radial-gradient(circle at 35% 30%, #d4b8e0 0%, #b07cc5 60%, #8a5ca0 100%); border-color: #b07cc5; box-shadow: 0 0 14px rgba(176,124,197,0.55), inset 0 0 8px rgba(255,255,255,0.3); }
+
+.option.c3 { border-color: #c4a0d4; }
+.option.c3:hover { background: rgba(196,160,212,0.15); }
+.option.c3.selected { background: radial-gradient(circle at 35% 30%, #e0c8eb 0%, #c4a0d4 60%, #a080b8 100%); border-color: #c4a0d4; box-shadow: 0 0 12px rgba(196,160,212,0.5), inset 0 0 8px rgba(255,255,255,0.3); }
+
+.option.c4 { border-color: #ccc; }
+.option.c4:hover { background: rgba(200,200,200,0.2); }
+.option.c4.selected { background: radial-gradient(circle at 35% 30%, #e8e8e8 0%, #ccc 60%, #aaa 100%); border-color: #ccc; box-shadow: 0 0 10px rgba(180,180,180,0.4), inset 0 0 8px rgba(255,255,255,0.3); }
+
+.option.c5 { border-color: #a0d4a0; }
+.option.c5:hover { background: rgba(160,212,160,0.15); }
+.option.c5.selected { background: radial-gradient(circle at 35% 30%, #c8e8c8 0%, #a0d4a0 60%, #80b880 100%); border-color: #a0d4a0; box-shadow: 0 0 12px rgba(160,212,160,0.5), inset 0 0 8px rgba(255,255,255,0.3); }
+
+.option.c6 { border-color: #6abf6a; }
+.option.c6:hover { background: rgba(106,191,106,0.15); }
+.option.c6.selected { background: radial-gradient(circle at 35% 30%, #a0d4a0 0%, #6abf6a 60%, #4a9a4a 100%); border-color: #6abf6a; box-shadow: 0 0 14px rgba(106,191,106,0.55), inset 0 0 8px rgba(255,255,255,0.3); }
+
+.option.c7 { border-color: #2ecc71; }
+.option.c7:hover { background: rgba(46,204,113,0.15); }
+.option.c7.selected { background: radial-gradient(circle at 35% 30%, #80e0a8 0%, #2ecc71 50%, #1a8a4a 100%); border-color: #2ecc71; box-shadow: 0 0 16px rgba(46,204,113,0.6), inset 0 0 8px rgba(255,255,255,0.3); }
+
+.submit-area { text-align: center; margin: 32px 0; }
+.submit-area button {
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #5a4880;
+  border: 1px solid rgba(168,124,207,0.3);
+  padding: 16px 56px;
+  font-size: 18px;
+  font-weight: 400;
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.4em;
+  font-family: 'Zen Old Mincho', serif;
+  transition: all 0.4s;
+  text-shadow: 0 1px 8px rgba(255,255,255,0.6);
+}
+.submit-area button:hover {
+  color: #b8985c;
+  border-color: rgba(184,152,92,0.8);
+  background: rgba(255,250,240,0.4);
+  text-shadow: 0 0 12px rgba(255,235,200,0.9), 0 0 32px rgba(184,152,92,0.5);
+  box-shadow: 0 0 32px rgba(196,168,120,0.3);
+}
+.submit-area button:disabled { opacity: 0.35; cursor: default; transform: none; box-shadow: none; }
+.submit-remaining { color: #8a7aa0; font-size: 12px; margin-top: 12px; letter-spacing: 0.15em; font-family: 'Zen Old Mincho', serif; }
+
+/* 結果画面 */
+#result { display: none; text-align: center; padding: 40px 0; }
+.result-type { font-size: 14px; color: #999; margin-bottom: 8px; }
+.result-name { font-size: 56px; font-weight: bold; margin-bottom: 8px; background: linear-gradient(135deg, #7c5cbf, #a87ccf, #7c5cbf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 8px; }
+.result-shadow .result-name { background: linear-gradient(135deg, #c0392b, #e74c3c, #c0392b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.result-mbti { font-size: 18px; color: #888; margin-bottom: 4px; letter-spacing: 4px; }
+.result-identity { font-size: 14px; color: #7c5cbf; margin-bottom: 32px; }
+.result-shadow .result-identity { color: #c0392b; }
+.result-desc { color: #666; font-size: 14px; margin-bottom: 40px; line-height: 1.8; }
+
+.scores { text-align: left; background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.scores h3 { font-size: 14px; color: #999; margin-bottom: 16px; }
+.score-row { display: flex; align-items: center; margin-bottom: 12px; }
+.score-label { width: 80px; font-size: 13px; color: #666; }
+.score-bar-bg { flex: 1; height: 8px; background: #e8e8e0; border-radius: 4px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+.score-bar-fill.e { background: #4ecdc4; }
+.score-bar-fill.o { background: #f7b731; }
+.score-bar-fill.a { background: #a8e063; }
+.score-bar-fill.c { background: #778beb; }
+.score-bar-fill.n { background: #e77f67; }
+.score-val { width: 48px; text-align: right; font-size: 13px; color: #888; }
+
+/* レーダーチャート */
+.radar-wrap { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 420px; margin-left: auto; margin-right: auto; }
+
+.retry { margin-top: 20px; }
+.retry button { background: #fff; border: 1px solid #ccc; color: #555; padding: 12px 32px; border-radius: 8px; cursor: pointer; font-size: 15px; }
+.retry button:hover { border-color: #7c5cbf; color: #7c5cbf; }
+
+/* モード切替 */
+
+/* ダークモード */
+
+/* AI解説レポート */
+.ai-report { background: #fff; border-radius: 12px; padding: 32px; margin-bottom: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: left; }
+.ai-loading { text-align: center; padding: 40px 0; }
+.loading-spinner { width: 40px; height: 40px; border: 3px solid #e0e0d8; border-top-color: #7c5cbf; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { color: #999; font-size: 14px; }
+.report-section { margin-bottom: 24px; }
+.report-section h3 { font-size: 15px; color: #7c5cbf; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #e8e8e0; }
+.report-section p { font-size: 14px; line-height: 1.8; color: #444; }
+.report-item { margin-bottom: 12px; }
+.report-item-name { font-size: 14px; font-weight: bold; color: #2a2a2a; margin-bottom: 2px; }
+.report-item-desc { font-size: 13px; line-height: 1.7; color: #666; }
+
+
+.result-shadow .report-section h3 { color: #c0392b; }
+
+@media (max-width: 600px) {
+  .container { padding: 12px; }
+  #start button {
+    position: relative;
+    display: block;
+    width: 64%;
+    max-width: 280px;
+    margin: 56px auto 0;
+    transform: none;
+    font-size: 22px;
+    padding: 14px 18px;
+    letter-spacing: 0.35em;
+    color: #5a4880;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(220, 205, 240, 0.35) 100%);
+    border: 1px solid rgba(198, 168, 120, 0.5);
+    border-radius: 999px;
+    box-shadow:
+      0 0 24px 4px rgba(216, 180, 212, 0.4),
+      0 0 48px 8px rgba(180, 150, 220, 0.18);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .question-card { padding: 16px; }
+  .options-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "opt opt" "left right";
+    gap: 10px;
+    width: 100%;
+    align-items: center;
+  }
+  .options-row .options { grid-area: opt; width: 100%; justify-content: space-between; }
+  .options-row .scale-label.left { grid-area: left; text-align: left; padding: 0 !important; }
+  .options-row .scale-label.right { grid-area: right; text-align: right; padding: 0 !important; }
+  .scale-label { display: block; width: auto; font-size: 11px; }
+  .options { gap: 6px; }
+  .option.s1 { width: 38px; height: 38px; }
+  .option.s2 { width: 32px; height: 32px; }
+  .option.s3 { width: 26px; height: 26px; }
+  .option.s4 { width: 22px; height: 22px; }
+  .result-name { font-size: 40px; letter-spacing: 4px; }
+}
+
+/* ============================================
+   召喚演出（儀式型ガチャ・油彩派手）
+============================================ */
+#ceremonyOverlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: radial-gradient(ellipse at center, #1a0b1f 0%, #050207 70%);
+  display: none;
+  overflow: hidden;
+  font-family: 'Zen Old Mincho', serif;
+  color: #f3e2a8;
+}
+#ceremonyOverlay.active { display: block; }
+
+/* 光柱 */
+.cer-pillar {
+  position: absolute;
+  top: -10%; left: 50%; transform: translateX(-50%);
+  width: 380px; height: 130%;
+  background: linear-gradient(180deg,
+    rgba(255, 240, 180, 0) 0%,
+    rgba(255, 240, 180, 0.05) 20%,
+    rgba(255, 220, 130, 0.18) 50%,
+    rgba(255, 240, 180, 0.05) 80%,
+    rgba(255, 240, 180, 0) 100%);
+  filter: blur(8px);
+  opacity: 0;
+  animation: cerPillarFade 1.6s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes cerPillarFade {
+  0% { opacity: 0; transform: translateX(-50%) scaleY(0.3); }
+  60% { opacity: 1; transform: translateX(-50%) scaleY(1); }
+  100% { opacity: 0.8; transform: translateX(-50%) scaleY(1); }
+}
+.cer-pillar.wide {
+  width: 70vw;
+  background: linear-gradient(180deg,
+    rgba(255, 240, 180, 0) 0%,
+    rgba(255, 220, 130, 0.08) 50%,
+    rgba(255, 240, 180, 0) 100%);
+  filter: blur(40px);
+  animation: cerPillarFade 2.2s ease-out forwards;
+}
+
+/* 金箔粒子 */
+.cer-dust {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.cer-dust span {
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff5d0 0%, rgba(243, 226, 168, 0.6) 50%, transparent 100%);
+  box-shadow: 0 0 6px #fff5d0;
+  opacity: 0;
+  animation: cerDustFloat linear infinite;
+}
+@keyframes cerDustFloat {
+  0% { transform: translateY(110vh) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-10vh) translateX(var(--drift, 0px)); opacity: 0; }
+}
+
+/* 羊皮紙の文字 */
+.cer-text {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  text-align: center;
+  letter-spacing: 0.3em;
+  text-shadow: 0 0 16px rgba(255, 220, 130, 0.7), 0 2px 8px rgba(0,0,0,0.8);
+}
+.cer-text.heading {
+  top: 14%;
+  font-size: 18px;
+  color: #e8d4a0;
+  opacity: 0;
+  animation: cerTextFadeIn 1.2s ease-out 0.3s forwards;
+}
+.cer-text.subline {
+  top: 22%;
+  font-size: 14px;
+  color: #c9a96a;
+  letter-spacing: 0.4em;
+  opacity: 0;
+  animation: cerTextFadeIn 1.2s ease-out 0.8s forwards;
+}
+@keyframes cerTextFadeIn {
+  0% { opacity: 0; letter-spacing: 0.6em; filter: blur(6px); }
+  100% { opacity: 1; letter-spacing: 0.3em; filter: blur(0); }
+}
+
+/* ヒーロー画像召喚（左のイラスト部分のみ表示） */
+.cer-hero-wrap {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  width: min(360px, 70vw);
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  opacity: 0;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#1a0b1f, #1a0b1f) padding-box,
+    linear-gradient(135deg, #b89cd8 0%, #f3e2a8 50%, #b89cd8 100%) border-box;
+  box-shadow:
+    0 0 40px rgba(255, 220, 130, 0.5),
+    0 0 100px rgba(255, 200, 100, 0.3),
+    inset 0 0 30px rgba(255, 240, 180, 0.2);
+}
+.cer-hero-wrap img {
+  object-position: left center !important;
+}
+.cer-hero-wrap.show {
+  animation: cerHeroEmerge 2.2s cubic-bezier(.3,.7,.4,1) forwards;
+}
+@keyframes cerHeroEmerge {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); filter: blur(20px); }
+  30% { opacity: 0.7; filter: blur(8px); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+}
+.cer-hero-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block;
+}
+
+/* 結果テキスト */
+.cer-reveal {
+  position: absolute;
+  left: 50%; bottom: 14%;
+  transform: translateX(-50%);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+}
+.cer-reveal.show {
+  animation: cerRevealIn 1.4s ease-out forwards;
+}
+@keyframes cerRevealIn {
+  0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.cer-reveal-lead {
+  font-size: 14px; letter-spacing: 0.3em;
+  color: #c9a96a; margin-bottom: 12px;
+}
+.cer-reveal-name {
+  font-size: 42px; font-weight: 500;
+  letter-spacing: 0.25em;
+  color: #fff5d0;
+  text-shadow:
+    0 0 24px rgba(255, 220, 130, 0.9),
+    0 0 60px rgba(255, 200, 100, 0.5);
+}
+.cer-reveal-fr {
+  margin-top: 8px;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: #b8985c;
+}
+
+/* 金ヴェールフラッシュ */
+.cer-flash {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255, 240, 180, 0.9) 0%, rgba(255, 220, 130, 0.4) 40%, transparent 80%);
+  opacity: 0;
+  pointer-events: none;
+}
+.cer-flash.fire { animation: cerFlashFire 0.8s ease-out; }
+@keyframes cerFlashFire {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* タップで進む */
+.cer-tap {
+  position: absolute;
+  left: 50%; bottom: 5%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: rgba(243, 226, 168, 0.5);
+  opacity: 0;
+  animation: cerTapBlink 1.8s ease-in-out 3s infinite;
+}
+@keyframes cerTapBlink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+/* ============================================
+   タイブレーカー（境界の人だけ・追加問）
+============================================ */
+#tiebreakerOverlay {
+  position: fixed; inset: 0; z-index: 9998;
+  background: radial-gradient(ellipse at center, #fbf5fb 0%, #eadcef 60%, #d8c5e6 100%);
+  display: none;
+  overflow: hidden;
+  font-family: 'Zen Old Mincho', serif;
+  color: #4a3a6a;
+}
+#tiebreakerOverlay.active { display: block; }
+
+.tb-stage {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 6vh 6vw;
+  text-align: center;
+}
+
+.tb-eyebrow {
+  font-size: 15px; letter-spacing: 0.6em;
+  color: #b8985c;
+  margin-bottom: 22px;
+  opacity: 0;
+  animation: tbFadeIn 0.9s ease-out 0.2s forwards;
+}
+.tb-axis-name {
+  font-size: 44px; letter-spacing: 0.4em;
+  color: #5a4880;
+  margin-bottom: 8px;
+  text-shadow: 0 0 24px rgba(255, 255, 255, 0.9), 0 0 48px rgba(216, 184, 224, 0.7);
+  opacity: 0;
+  animation: tbAxisIn 1.2s cubic-bezier(.3,.7,.4,1) 0.6s forwards;
+}
+.tb-axis-sub {
+  font-size: 16px; letter-spacing: 0.5em;
+  color: #8a6fb0;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: tbFadeIn 0.9s ease-out 1.4s forwards;
+}
+.tb-question {
+  font-size: 17px; line-height: 2;
+  color: #3a2a55;
+  max-width: 640px;
+  margin-bottom: 36px;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  animation: tbFadeIn 1.2s ease-out 2s forwards;
+  text-wrap: pretty;
+}
+.tb-prompt {
+  font-size: 14px; letter-spacing: 0.4em;
+  color: #b8985c;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: tbFadeIn 0.9s ease-out 2.6s forwards;
+}
+.tb-choices {
+  display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;
+}
+.tb-choice {
+  position: relative;
+  min-width: 240px;
+  max-width: 340px;
+  padding: 26px 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(245, 235, 250, 0.55) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(184, 152, 92, 0.45);
+  border-radius: 10px;
+  color: #3a2a55;
+  font-family: inherit;
+  font-size: 16px; line-height: 1.7;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s;
+  text-align: center;
+}
+.tb-choice .tb-mark {
+  display: block;
+  font-size: 28px;
+  color: #b8985c;
+  margin-bottom: 14px;
+  letter-spacing: 0;
+  text-shadow: 0 0 12px rgba(255, 240, 200, 0.7);
+}
+.tb-choice.left { animation: tbChoiceLeft 0.9s cubic-bezier(.3,.7,.4,1) 3s forwards; }
+.tb-choice.right { animation: tbChoiceRight 0.9s cubic-bezier(.3,.7,.4,1) 3s forwards; }
+.tb-choice:hover {
+  border-color: rgba(216, 184, 130, 0.95);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 240, 235, 0.85) 100%);
+  box-shadow:
+    0 0 24px rgba(255, 240, 200, 0.7),
+    0 0 48px rgba(216, 184, 224, 0.4),
+    inset 0 0 20px rgba(255, 250, 235, 0.5);
+  transform: translateY(-4px);
+}
+.tb-choice.chosen {
+  animation: tbChosenFlash 0.6s ease-out;
+}
+@keyframes tbAxisIn {
+  0% { opacity: 0; transform: scale(2.2); letter-spacing: 1em; filter: blur(20px); }
+  40% { opacity: 1; transform: scale(1.15); filter: blur(2px); }
+  70% { transform: scale(0.95); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1); letter-spacing: 0.4em; filter: blur(0); text-shadow: 0 0 40px rgba(255, 220, 130, 1), 0 0 80px rgba(200, 150, 255, 0.6); }
+}
+@keyframes tbFadeIn {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes tbChoiceLeft {
+  0% { opacity: 0; transform: translateX(-80px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes tbChoiceRight {
+  0% { opacity: 0; transform: translateX(80px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes tbChosenFlash {
+  0% { background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(245, 235, 250, 0.55) 100%); }
+  50% {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 245, 220, 0.95) 100%);
+    box-shadow: 0 0 60px rgba(255, 240, 200, 1), 0 0 120px rgba(216, 184, 224, 0.7);
+    color: #5a4880;
+  }
+  100% { opacity: 0; transform: scale(0.95); }
+}
+
+/* タイブレーカー稲妻背景 */
+.tb-lightning {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(160, 100, 200, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(120, 80, 180, 0.12) 0%, transparent 50%);
+  pointer-events: none;
+  animation: tbLightning 6s ease-in-out infinite;
+}
+@keyframes tbLightning {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+/* 入場閃光フラッシュ */
+.tb-entry-flash {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, #fff 0%, rgba(200, 150, 255, 0.6) 30%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  animation: tbEntryFlash 0.6s ease-out forwards;
+}
+@keyframes tbEntryFlash {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* 稲妻パルス（入場時のみ・走り終わって静止） */
+.tb-bolt {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 240, 200, 0.5) 42%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 240, 200, 0.5) 58%, transparent 100%);
+  opacity: 0;
+  pointer-events: none;
+  animation: tbBoltStrike 1.5s ease-out forwards;
+  mix-blend-mode: normal;
+  filter: drop-shadow(0 0 14px rgba(255, 220, 150, 0.5));
+}
+.tb-bolt.b2 { animation-delay: 0.7s; }
+@keyframes tbBoltStrike {
+  0% { opacity: 0; }
+  15% { opacity: 0.85; }
+  35% { opacity: 0; }
+  50% { opacity: 0.5; }
+  65% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* 軸対立粒子（左右から中央へ衝突） */
+.tb-particles {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.tb-particles span {
+  position: absolute;
+  bottom: -10px;
+  width: var(--sz, 3px); height: var(--sz, 3px);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--pc, #e8c4ff) 0%, rgba(255,255,255,0.2) 60%, transparent 100%);
+  box-shadow: 0 0 8px var(--pc, #c89cff);
+  animation: tbParticleCollide linear infinite;
+  --tx: 0px;
+}
+@keyframes tbParticleCollide {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  8% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(-110vh) translateX(var(--tx, 0px)); opacity: 0; }
+}
+
+/* カメラシェイク */
+.tb-stage.shake {
+  animation: tbShake 0.5s ease-out;
+}
+@keyframes tbShake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-4px, 2px); }
+  40% { transform: translate(3px, -3px); }
+  60% { transform: translate(-2px, 3px); }
+  80% { transform: translate(3px, 2px); }
+}
+
+@media (max-width: 640px) {
+  .cer-hero-wrap { width: 65vw; }
+  .cer-text.heading { font-size: 15px; top: 10%; padding: 0 12px; }
+  .cer-text.subline { font-size: 12px; top: 18%; padding: 0 12px; letter-spacing: 0.25em; }
+  .cer-reveal { bottom: 10%; width: 92vw; }
+  .cer-reveal-lead { font-size: 12px; letter-spacing: 0.2em; }
+  .cer-reveal-name { font-size: 30px; letter-spacing: 0.15em; }
+  .cer-reveal-fr { font-size: 11px; letter-spacing: 0.2em; }
+  .tb-axis-name { font-size: 32px; }
+  .tb-question { font-size: 15px; }
+  .tb-choice { min-width: unset; width: 100%; font-size: 14px; padding: 18px 16px; }
+  .tb-choices { flex-direction: column; gap: 14px; }
+}
+
+/* ============================================
+   いたずら回答ガード（地獄域モーダル）
+============================================ */
+#hellGate {
+  position: fixed; inset: 0; z-index: 10000;
+  display: none;
+  align-items: center; justify-content: center;
+  background:
+    linear-gradient(180deg, rgba(10,1,3,0.35) 0%, rgba(10,1,3,0.75) 100%),
+    url('挿絵/_地獄門/_hell_gate_pc.webp') center/cover no-repeat,
+    radial-gradient(ellipse at center, #2a0608 0%, #0a0103 70%);
+  font-family: 'Zen Old Mincho', serif;
+  animation: hellFadeIn 0.6s ease-out;
+}
+@media (max-width: 900px) {
+  #hellGate {
+    background:
+      linear-gradient(180deg, rgba(10,1,3,0.3) 0%, rgba(10,1,3,0.8) 100%),
+      url('挿絵/_地獄門/_hell_gate_sp.webp') center/cover no-repeat,
+      radial-gradient(ellipse at center, #2a0608 0%, #0a0103 70%);
+  }
+}
+#hellGate.active { display: flex; }
+@keyframes hellFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.hell-emberlayer {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 15% 80%, rgba(190, 50, 30, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 20%, rgba(150, 30, 20, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(220, 80, 30, 0.25) 0%, transparent 60%);
+  animation: hellEmberPulse 4s ease-in-out infinite;
+}
+@keyframes hellEmberPulse { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
+.hell-card {
+  position: relative;
+  max-width: 520px; width: 88vw;
+  padding: 48px 36px 36px;
+  background: linear-gradient(180deg, rgba(30,8,10,0.95) 0%, rgba(15,3,5,0.95) 100%);
+  border: 1px solid rgba(180, 90, 50, 0.55);
+  border-radius: 4px;
+  box-shadow:
+    0 0 80px rgba(180, 50, 30, 0.5),
+    0 0 160px rgba(120, 20, 10, 0.3),
+    inset 0 0 40px rgba(80, 15, 10, 0.4);
+  text-align: center;
+  color: #e8c8a0;
+}
+.hell-card::before {
+  content: ''; position: absolute; inset: 6px;
+  border: 1px solid rgba(180, 120, 70, 0.25);
+  pointer-events: none;
+}
+.hell-eyebrow {
+  font-size: 16px; letter-spacing: 0.7em;
+  color: #d8784a;
+  margin-bottom: 24px;
+  text-shadow: 0 0 16px rgba(220, 80, 40, 0.8), 0 0 32px rgba(180, 50, 20, 0.5);
+  opacity: 0;
+  animation: hellEyebrowSlam 1.1s cubic-bezier(.2,.8,.2,1) 0.2s forwards;
+}
+@keyframes hellEyebrowSlam {
+  0% { opacity: 0; transform: scale(3) rotate(-1deg); filter: blur(8px); letter-spacing: 1.5em; color: #fff5d0; text-shadow: 0 0 80px rgba(255,200,100,1); }
+  30% { opacity: 1; transform: scale(0.85); filter: blur(0); color: #ffb070; text-shadow: 0 0 32px rgba(255,140,60,1), 0 0 64px rgba(220,60,20,0.7); }
+  45% { transform: scale(1.08) translateX(-3px); }
+  55% { transform: scale(0.96) translateX(3px); }
+  65% { transform: scale(1.02) translateX(-2px); }
+  75% { transform: scale(1) translateX(2px); }
+  100% { opacity: 1; transform: scale(1) translateX(0); letter-spacing: 0.7em; color: #d8784a; }
+}
+.hell-title {
+  font-size: 28px; letter-spacing: 0.3em;
+  color: #f4d8a8;
+  margin-bottom: 22px;
+  text-shadow:
+    0 0 16px rgba(220, 100, 50, 0.7),
+    0 0 32px rgba(160, 40, 20, 0.4);
+  opacity: 0;
+  animation: hellTitleIn 0.9s cubic-bezier(.2,.7,.3,1) 1.2s forwards;
+}
+@keyframes hellTitleIn {
+  0% { opacity: 0; transform: translateY(10px); filter: blur(6px); }
+  60% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.hell-body, .hell-buttons { opacity: 0; animation: hellFadeIn 0.8s ease-out 1.8s forwards; }
+@keyframes hellFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 火の粉（下から舞い上がる） */
+.hell-sparks { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.hell-sparks span {
+  position: absolute;
+  bottom: -10px;
+  width: var(--sz,4px); height: var(--sz,4px);
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffd080 0%, #f48838 40%, transparent 70%);
+  box-shadow: 0 0 12px #f48838, 0 0 24px rgba(220,60,20,0.6);
+  animation: hellSparkRise linear infinite;
+}
+@keyframes hellSparkRise {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  8% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-110vh) translateX(var(--tx,0px)); opacity: 0; }
+}
+.hell-body {
+  font-size: 14px; line-height: 2;
+  color: #d8b890;
+  margin-bottom: 32px;
+  letter-spacing: 0.08em;
+  text-wrap: pretty;
+}
+.hell-body em {
+  font-style: normal;
+  color: #f4a868;
+  text-shadow: 0 0 8px rgba(220, 100, 50, 0.5);
+}
+.hell-buttons {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+}
+.hell-btn {
+  padding: 14px 28px;
+  min-width: 220px;
+  width: 220px;
+  font-family: inherit;
+  font-size: 14px; letter-spacing: 0.3em;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.3s;
+  background: transparent;
+  box-sizing: border-box;
+}
+.hell-btn.retry {
+  border: 1px solid rgba(220, 160, 100, 0.7);
+  color: #f4d8a8;
+}
+.hell-btn.retry:hover {
+  background: rgba(180, 90, 50, 0.25);
+  border-color: #f4d8a8;
+  box-shadow: 0 0 20px rgba(220, 120, 60, 0.5);
+}
+.hell-btn.proceed {
+  border: 1px solid rgba(180, 60, 40, 0.55);
+  color: #a87858;
+}
+.hell-btn.proceed:hover {
+  color: #c08868;
+  border-color: rgba(180, 60, 40, 0.85);
+}
+@media (max-width: 600px) {
+  .hell-title { font-size: 22px; }
+  .hell-body { font-size: 13px; }
+  .hell-buttons { flex-direction: column; }
+  .hell-btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- いたずら回答ガード（地獄域） -->
+<div id="hellGate">
+  <div class="hell-emberlayer"></div>
+  <div class="hell-sparks" id="hellSparks"></div>
+  <div class="hell-card">
+    <div class="hell-eyebrow">— 審 判 —</div>
+    <div class="hell-title">本気で、答えましたか</div>
+    <div class="hell-body" id="hellBody"></div>
+    <div class="hell-buttons">
+      <button class="hell-btn retry" onclick="location.href='index.html'">最初からやり直す</button>
+      <button class="hell-btn proceed" onclick="hellProceed()">構わず進む</button>
+    </div>
+  </div>
+</div>
+
+<!-- タイブレーカーオーバーレイ -->
+<div id="tiebreakerOverlay"></div>
+
+<!-- 召喚演出オーバーレイ -->
+<div id="ceremonyOverlay"></div>
+
+<!-- イントロモーダル -->
+<div id="introModal">
+  <div class="intro-card">
+    <h2>覚醒の前に</h2>
+    <p class="intro-sub">あなたの名と、生まれを記す</p>
+    <div class="intro-field">
+      <label>ニックネーム</label>
+      <input type="text" id="inNickname" maxlength="20" placeholder="あなたの呼び名" autocomplete="off">
+    </div>
+    <div class="intro-field">
+      <label>生年月日</label>
+      <div class="wheel-date">
+        <div class="wheel-col"><div class="wheel" id="wheelYear"></div><div class="wheel-unit">年</div></div>
+        <div class="wheel-col"><div class="wheel" id="wheelMonth"></div><div class="wheel-unit">月</div></div>
+        <div class="wheel-col"><div class="wheel" id="wheelDay"></div><div class="wheel-unit">日</div></div>
+        <div class="wheel-mask"></div>
+      </div>
+      <input type="hidden" id="inYear"><input type="hidden" id="inMonth"><input type="hidden" id="inDay">
+    </div>
+    <div class="intro-field">
+      <label>性別</label>
+      <div class="intro-gender">
+        <label class="gender-opt"><input type="radio" name="inGender" value="男性"><span>男性</span></label>
+        <label class="gender-opt"><input type="radio" name="inGender" value="女性"><span>女性</span></label>
+        <label class="gender-opt"><input type="radio" name="inGender" value="その他"><span>その他</span></label>
+      </div>
+    </div>
+    <button class="intro-btn" id="introSubmitBtn" onclick="confirmIntroAndStart()" disabled>覚醒の旅へ</button>
+    <p class="intro-note">※すべて入力いただくと、診断の精度が格段にあがります</p>
+  </div>
+</div>
+
+<div class="container">
+  <div id="start">
+    <h1 style="display:none;">ナニモノ</h1>
+    <p style="display:none;">40の質問に答えて、あなたの本質を知る</p>
+    <button onclick="startQuiz()">私は、<br>ナニモノか。</button>
+  </div>
+  <div id="lastResult" style="display:none;text-align:center;font-size:12px;color:#7c5cbf;margin:-160px 0 40px 7%;line-height:1.4;text-shadow:0 0 4px rgba(255,255,255,0.8);position:relative;z-index:10;">
+    <span style="cursor:pointer;" onclick="goLastResult()">↻ 前回 <span id="lastResultName" style="font-weight:bold;"></span></span>
+    <button onclick="clearLastResult(event)" style="background:none;border:none;font-size:12px;color:#aaa;cursor:pointer;line-height:1;padding:0 0 0 6px;">×</button>
+  </div>
+
+  <div id="quiz">
+    <div class="quiz-header">
+      <div class="quiz-brand">ナニモノ</div>
+      <div class="quiz-tagline">あなたの中に眠る人格を映し出す</div>
+      <div class="quiz-divider">✦</div>
+    </div>
+    <div class="progress-sticky">
+      <div class="progress-text"><span class="progress-label">覚醒の旅</span>　<span id="progressText">0 / 40</span></div>
+      <div class="progress"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    </div>
+    <div id="questionList"></div>
+    <div class="submit-area">
+      <button id="submitBtn" onclick="showResult()" disabled>結果を見る</button>
+      <div class="submit-remaining" id="remaining">あと40問</div>
+    </div>
+    <div style="text-align:center;margin:32px 0 48px;">
+      <a href="index.html" style="color:#aaa;font-size:12px;text-decoration:none;letter-spacing:0.1em;font-family:'Zen Old Mincho',serif;">← サイトTOPに戻る</a>
+    </div>
+  </div>
+
+  <div id="result">
+    <div class="result-type" id="resultType"></div>
+    <div class="result-name" id="resultName"></div>
+    <div class="result-mbti" id="resultMbti"></div>
+    <div class="result-identity" id="resultIdentity"></div>
+    <div class="result-desc" id="resultDesc"></div>
+
+    <div class="radar-wrap" id="radarWrap">
+      <canvas id="radarChart"></canvas>
+    </div>
+
+    <div class="scores" id="scores">
+      <h3>あなたのスコア</h3>
+    </div>
+
+    <div id="aiReport" class="ai-report" style="display:none">
+      <div class="ai-loading" id="aiLoading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">あなたの本質を読み解いています...</div>
+      </div>
+      <div id="aiContent" style="display:none">
+        <div class="report-section">
+          <h3>性格タイプ概要</h3>
+          <p id="rptOverview"></p>
+        </div>
+        <div class="report-section">
+          <h3>あなたの強み</h3>
+          <div id="rptStrengths"></div>
+        </div>
+        <div class="report-section">
+          <h3>あなたの弱み</h3>
+          <div id="rptWeaknesses"></div>
+        </div>
+        <div class="report-section">
+          <h3>あなたの成長</h3>
+          <p id="rptGrowth"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="retry"><button onclick="location.reload()">もう一度やる</button></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  { id:1,  text:"人と過ごした後、元気になる方だ", axis:"E", rev:false },
+  { id:2,  text:"「もし○○だったら」と空想するのが好きだ", axis:"O", rev:false },
+  { id:3,  text:"迷った時、最後は人の気持ちを優先する方だ", axis:"A", rev:false },
+  { id:4,  text:"何事も先に手順を考えてから動く方だ", axis:"C", rev:false },
+  { id:5,  text:"自分の評価を気にしすぎる方だ", axis:"N", rev:false },
+  { id:6,  text:"一人の時間の方が頭が整理される", axis:"E", rev:true },
+  { id:7,  text:"理論より実体験で学ぶ方が好きだ", axis:"O", rev:true },
+  { id:8,  text:"論理に矛盾があるとすぐ気になる方だ", axis:"A", rev:true },
+  { id:9,  text:"突然のお誘いやハプニングを楽しめる方だ", axis:"C", rev:true },
+  { id:10, text:"凹んでも、わりとすぐ立ち直る方だ", axis:"N", rev:true },
+  { id:11, text:"黙っているより喋っている方が好きだ", axis:"E", rev:false },
+  { id:12, text:"本質や原理を考えるのが好きだ", axis:"O", rev:false },
+  { id:13, text:"相手の感情の変化にすぐ気づく", axis:"A", rev:false },
+  { id:14, text:"ゴールを決めてから動きたい方だ", axis:"C", rev:false },
+  { id:15, text:"ちょっとしたことで気持ちが揺れやすい", axis:"N", rev:false },
+  { id:16, text:"即答せず、考える時間が欲しい方だ", axis:"E", rev:true },
+  { id:17, text:"細かい部分にもこだわる方だ", axis:"O", rev:true },
+  { id:18, text:"決める時は事実ベースで判断する方だ", axis:"A", rev:true },
+  { id:19, text:"きっちり決めすぎると窮屈だ", axis:"C", rev:true },
+  { id:20, text:"想定外でも落ち着いていられる", axis:"N", rev:true },
+  { id:21, text:"考えてから話すより、話しながら考える方だ", axis:"E", rev:false },
+  { id:22, text:"当たり前とされることを疑ってしまう方だ", axis:"O", rev:false },
+  { id:23, text:"反対意見でも、相手の立場を理解しようとする方だ", axis:"A", rev:false },
+  { id:24, text:"タスクは早めに片付ける方だ", axis:"C", rev:false },
+  { id:25, text:"気分が日によって変わる方だ", axis:"N", rev:false },
+  { id:26, text:"少人数で深く話す方が満たされる", axis:"E", rev:true },
+  { id:27, text:"目の前のことに集中する方が得意だ", axis:"O", rev:true },
+  { id:28, text:"白黒はっきりさせる方が落ち着く", axis:"A", rev:true },
+  { id:29, text:"その場に合わせて動く方が得意だ", axis:"C", rev:true },
+  { id:30, text:"プレッシャーの中でも力を発揮できる方だ", axis:"N", rev:true },
+  { id:31, text:"ストレスがたまったら、人と話したくなる方だ", axis:"E", rev:false },
+  { id:32, text:"大勢の集まりは疲れやすい方だ", axis:"E", rev:true },
+  { id:33, text:"物事に共通点や法則を見つけるのが好きだ", axis:"O", rev:false },
+  { id:34, text:"考えるより、まず動く方だ", axis:"O", rev:true },
+  { id:35, text:"人を励ましたり褒めたりするのが自然にできる方だ", axis:"A", rev:false },
+  { id:36, text:"感情論より理屈で説明されたい方だ", axis:"A", rev:true },
+  { id:37, text:"急な予定変更にストレスを感じる方だ", axis:"C", rev:false },
+  { id:38, text:"完璧より速度を優先する方だ", axis:"C", rev:true },
+  { id:39, text:"人の目が気になって動けない時がある", axis:"N", rev:false },
+  { id:40, text:"自分の決めたことに自信を持てる方だ", axis:"N", rev:true }
+];
+
+// 6段階: 大○ ○ 小○ 小○ ○ 大○（中央なし・グレースキップ）
+const optSizes  = ["s1","s2","s3","s3","s2","s1"];
+const optColors = ["c7","c6","c5","c3","c2","c1"];
+
+const typeMap = {
+  "ENTJ": { light:"皇帝", shadow:"暴君", desc:"生まれつきのリーダー。戦略で組織を動かす" },
+  "ENTP": { light:"軍師", shadow:"傀儡師", desc:"知的な挑戦者。議論と発想で切り拓く" },
+  "INTJ": { light:"賢者", shadow:"狂学者", desc:"戦略的な孤高。長期ビジョンを設計する" },
+  "INTP": { light:"神官", shadow:"魔眼", desc:"理論の探究者。真理を追い求める" },
+  "ENFJ": { light:"聖騎士", shadow:"殉教者", desc:"人を導くカリスマ。共感で組織をまとめる" },
+  "ENFP": { light:"吟遊詩人", shadow:"道化師", desc:"自由な情熱。可能性を広げる" },
+  "INFJ": { light:"聖女", shadow:"妖狐", desc:"静かな理想主義。信念で世界を変える" },
+  "INFP": { light:"錬金術師", shadow:"呪術師", desc:"内なる炎。理想と感情の世界に生きる" },
+  "ESTJ": { light:"将軍", shadow:"独裁官", desc:"秩序と管理。ルールで統率する" },
+  "ESFJ": { light:"司祭", shadow:"偽善者", desc:"献身と調和。面倒見で人を支える" },
+  "ISTJ": { light:"守護者", shadow:"番人", desc:"堅実と責任。黙々と約束を守る" },
+  "ISFJ": { light:"巫女", shadow:"影法師", desc:"静かな支え。縁の下で人を癒す" },
+  "ESTP": { light:"闘士", shadow:"無法者", desc:"行動力の塊。リスクを恐れず突っ込む" },
+  "ESFP": { light:"舞姫", shadow:"快楽主義者", desc:"華やかな存在。場のエネルギーを上げる" },
+  "ISTP": { light:"鍛冶師", shadow:"破壊者", desc:"職人気質。手と頭で問題を解く" },
+  "ISFP": { light:"夢織り", shadow:"幻影師", desc:"感性と美。自分の世界を大事にする" }
+};
+
+let answers = new Array(40).fill(null);
+let answerTimes = new Array(40).fill(null);   // 各問の回答時刻（ms from quizStart）
+let answerChanges = new Array(40).fill(0);    // 各問の変更回数
+let quizStartTime = null;                      // 診断開始時刻
+let sessionId = null;                          // セッションID
+
+// ▼ GAS WebアプリURL（ログ送信先）
+const GAS_LOG_URL = "https://script.google.com/macros/s/AKfycbwsj2-jdQhdxq0DOD6r-ku5JfUMIkcLHiu-mrrpW5SUS9vQD0y2TUSe875E2khVjPRxYA/exec";
+
+// ▼ ログ用の追加情報
+let userNickname = "";
+let userBirthday = "";
+let userGender = "";
+
+function getDevice() {
+  const ua = navigator.userAgent;
+  if (/iPhone|iPad|iPod/.test(ua)) return "iOS";
+  if (/Android/.test(ua)) return "Android";
+  if (/Windows/.test(ua)) return "Windows";
+  if (/Mac/.test(ua)) return "Mac";
+  return "Other";
+}
+function getTimezone() {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e) { return ""; }
+}
+function getRef() {
+  return new URLSearchParams(location.search).get("ref") || "";
+}
+function getSrc() {
+  return new URLSearchParams(location.search).get("src") || "";
+}
+
+// 生年月日：自前ドラム式ホイールピッカー
+(function initIntroForm() {
+  const yEl = document.getElementById("inYear");
+  const mEl = document.getElementById("inMonth");
+  const dEl = document.getElementById("inDay");
+  if (!yEl) return;
+  const ITEM_H = 34;
+  const nowY = new Date().getFullYear();
+
+  // ホイール生成：valuesの配列でアイテムを並べ、隠しinputに選択値を反映
+  function makeWheel(wheelEl, values, hiddenEl, onSettle) {
+    wheelEl.innerHTML = "";
+    const padTop = document.createElement("div"); padTop.className = "wheel-pad"; wheelEl.appendChild(padTop);
+    values.forEach(v => {
+      const it = document.createElement("div");
+      it.className = "wheel-item";
+      it.textContent = v;
+      it.dataset.value = v;
+      it.addEventListener("click", () => scrollToIndex(values.indexOf(v), true));
+      wheelEl.appendChild(it);
+    });
+    const padBot = document.createElement("div"); padBot.className = "wheel-pad"; wheelEl.appendChild(padBot);
+
+    const items = wheelEl.querySelectorAll(".wheel-item");
+    function highlight(idx) {
+      items.forEach((it, i) => it.classList.toggle("center", i === idx));
+    }
+    function currentIndex() {
+      return Math.max(0, Math.min(values.length - 1, Math.round(wheelEl.scrollTop / ITEM_H)));
+    }
+    function settle() {
+      const idx = currentIndex();
+      highlight(idx);
+      hiddenEl.value = values[idx];
+      if (onSettle) onSettle(values[idx]);
+    }
+    function scrollToIndex(idx, smooth) {
+      wheelEl.scrollTo({ top: idx * ITEM_H, behavior: smooth ? "smooth" : "auto" });
+      highlight(idx);
+      hiddenEl.value = values[idx];
+    }
+    let scrollTimer;
+    wheelEl.addEventListener("scroll", () => {
+      highlight(currentIndex());
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(settle, 120);
+    });
+    wheelEl._scrollToValue = (v) => {
+      const idx = values.indexOf(v);
+      if (idx >= 0) scrollToIndex(idx, false);
+    };
+    wheelEl._settle = settle;
+    return { values };
+  }
+
+  const years = []; for (let y = nowY; y >= 1920; y--) years.push(y);
+  const months = []; for (let m = 1; m <= 12; m++) months.push(m);
+  function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
+  function buildDays(y, m) {
+    const max = (y && m) ? daysInMonth(y, m) : 31;
+    const arr = []; for (let d = 1; d <= max; d++) arr.push(d); return arr;
+  }
+
+  const btn = document.getElementById("introSubmitBtn");
+  const nameInput = document.getElementById("inNickname");
+  function check() {
+    const hasName = nameInput.value.trim();
+    const hasBday = yEl.value && mEl.value && dEl.value;
+    const hasGender = document.querySelector('input[name="inGender"]:checked');
+    btn.disabled = !(hasName && hasBday && hasGender);
+  }
+
+  const wY = document.getElementById("wheelYear");
+  const wM = document.getElementById("wheelMonth");
+  const wD = document.getElementById("wheelDay");
+
+  function rebuildDays() {
+    const y = +yEl.value, m = +mEl.value;
+    const prevD = +dEl.value || 1;
+    makeWheel(wD, buildDays(y, m), dEl, check);
+    const days = buildDays(y, m);
+    const target = Math.min(prevD, days.length);
+    wD._scrollToValue(target);
+    wD._settle();
+  }
+
+  makeWheel(wY, years, yEl, () => { rebuildDays(); check(); });
+  makeWheel(wM, months, mEl, () => { rebuildDays(); check(); });
+  makeWheel(wD, buildDays(), dEl, check);
+
+  // 前回入力 or デフォルト（1990/1/1）に初期化
+  const savedName = localStorage.getItem("nanimono_nickname");
+  const savedBday = localStorage.getItem("nanimono_birthday");
+  const savedGender = localStorage.getItem("nanimono_gender");
+  if (savedName) nameInput.value = savedName;
+  let initY = 1990, initM = 1, initD = 1;
+  if (savedBday) {
+    const mm = savedBday.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (mm) { initY = +mm[1]; initM = +mm[2]; initD = +mm[3]; }
+  }
+  if (savedGender) {
+    const radio = document.querySelector(`input[name="inGender"][value="${savedGender}"]`);
+    if (radio) radio.checked = true;
+  }
+  // モーダルが開いた時にスクロール位置を合わせる必要があるので関数化
+  window.__initWheelPositions = function() {
+    wY._scrollToValue(initY); wY._settle();
+    wM._scrollToValue(initM); wM._settle();
+    makeWheel(wD, buildDays(initY, initM), dEl, check);
+    wD._scrollToValue(initD); wD._settle();
+  };
+
+  nameInput.addEventListener("input", check);
+  document.querySelectorAll('input[name="inGender"]').forEach(r => r.addEventListener("change", check));
+  check();
+})();
+
+function confirmIntroAndStart() {
+  const name = document.getElementById("inNickname").value.trim();
+  if (!name) return;
+  const y = document.getElementById("inYear").value;
+  const m = document.getElementById("inMonth").value;
+  const d = document.getElementById("inDay").value;
+  userNickname = name;
+  userBirthday = (y && m && d) ? `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}` : "";
+  const gRadio = document.querySelector('input[name="inGender"]:checked');
+  userGender = gRadio ? gRadio.value : "";
+  localStorage.setItem("nanimono_nickname", userNickname);
+  if (userBirthday) localStorage.setItem("nanimono_birthday", userBirthday);
+  if (userGender) localStorage.setItem("nanimono_gender", userGender);
+  document.getElementById("introModal").style.display = "none";
+  actuallyStartQuiz();
+}
+
+function sendLog(typeId, scores) {
+  if (!GAS_LOG_URL) return;
+  const duration = quizStartTime ? Math.round((Date.now() - quizStartTime) / 1000) : 0;
+  const changes = answerChanges.reduce((a, b) => a + b, 0);
+  const payload = {
+    nickname: userNickname || localStorage.getItem("nanimono_nickname") || "",
+    birthday: userBirthday || localStorage.getItem("nanimono_birthday") || "",
+    type: typeId,
+    ref: getRef(),
+    src: getSrc(),
+    duration: duration,
+    device: getDevice(),
+    changes: changes,
+    timezone: getTimezone(),
+    gender: userGender || localStorage.getItem("nanimono_gender") || "",
+    answers: answers.slice(),
+    lazyFlag: window.__nanimonoLazyFlag || null,
+    hellProceeded: !!window.__nanimonoHellProceeded
+  };
+  // ページ遷移しても確実に届くよう sendBeacon を優先利用
+  const body = JSON.stringify(payload);
+  try {
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
+      const ok = navigator.sendBeacon(GAS_LOG_URL, blob);
+      console.log("[ナニモノログ] sendBeacon:", ok);
+    } else {
+      fetch(GAS_LOG_URL, {
+        method: "POST",
+        mode: "no-cors",
+        keepalive: true,
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: body
+      }).catch(e => console.warn("log send failed", e));
+    }
+  } catch(e) { console.warn("log send error", e); }
+}
+
+// 前回の結果をlocalStorageから読み込んで表示
+(function() {
+  const last = localStorage.getItem("nanimono_last");
+  if (!last) return;
+  try {
+    const { typeId, date } = JSON.parse(last);
+    const el = document.getElementById("lastResult");
+    const nameEl = document.getElementById("lastResultName");
+    nameEl.textContent = typeId;
+    el.style.display = "block";
+  } catch(e) {}
+})();
+
+function clearLastResult(e) {
+  e.stopPropagation();
+  localStorage.removeItem("nanimono_last");
+  document.getElementById("lastResult").style.display = "none";
+}
+
+function goLastResult() {
+  const last = localStorage.getItem("nanimono_last");
+  if (!last) return;
+  const { typeId } = JSON.parse(last);
+  location.href = `result.html?type=${typeId}`;
+}
+
+function startQuiz() {
+  // モーダル表示。確定後 actuallyStartQuiz() が呼ばれる
+  document.getElementById("introModal").style.display = "flex";
+  // 表示後にホイール位置を初期値へ合わせる（非表示中はscrollTopが効かない）
+  setTimeout(() => {
+    if (window.__initWheelPositions) window.__initWheelPositions();
+  }, 60);
+}
+function actuallyStartQuiz() {
+  document.getElementById("start").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  document.body.classList.add("quiz-active");
+  quizStartTime = Date.now();
+  buildQuestions();
+}
+
+// URLに ?start=1 が付いていたら自動で診断開始
+if (new URLSearchParams(location.search).get("start") === "1") {
+  document.addEventListener("DOMContentLoaded", () => startQuiz());
+}
+
+// URLに ?hell=1 が付いていたら地獄域モーダルだけ表示（プレビュー用）
+if (new URLSearchParams(location.search).get("hell") === "1") {
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("hellBody").innerHTML = "<em>全ての問いに同じ印を遺した</em>者よ。<br>その魂は、揺らがぬほどに乾いているのか。";
+    const sparks = document.getElementById("hellSparks");
+    sparks.innerHTML = "";
+    const sparkCount = window.matchMedia('(max-width: 640px)').matches ? 18 : 36;
+    let sh = "";
+    for (let i = 0; i < sparkCount; i++) {
+      const left = Math.random() * 100;
+      const sz = 2 + Math.random() * 4;
+      const dur = 4 + Math.random() * 5;
+      const delay = Math.random() * 5;
+      const tx = (Math.random() - 0.5) * 80;
+      sh += `<span style="left:${left}%;--sz:${sz}px;--tx:${tx}px;animation-duration:${dur}s;animation-delay:${delay}s;"></span>`;
+    }
+    sparks.innerHTML = sh;
+    document.getElementById("hellGate").classList.add("active");
+  });
+}
+
+// URLに ?fill=N (1-7) が付いていたら全問N点で自動回答→即結果へ
+{
+  const fillVal = parseInt(new URLSearchParams(location.search).get("fill"), 10);
+  if (fillVal >= 1 && fillVal <= 7) {
+    window.__nanimonoBypassGuard = true;
+    document.addEventListener("DOMContentLoaded", () => {
+      answers = new Array(questions.length).fill(fillVal);
+      showResult();
+    });
+  }
+}
+
+// URLに ?replay=1 が付いていたら前回の回答で再判定（タイブレーカー＋召喚演出だけテストする用）
+if (new URLSearchParams(location.search).get("replay") === "1") {
+  window.__nanimonoBypassGuard = true;
+  document.addEventListener("DOMContentLoaded", () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("nanimono_lastAnswers") || "null");
+      if (!saved || saved.length !== 40) {
+        alert("前回の回答が見つかりません。先に1回診断してください。");
+        return;
+      }
+      answers = saved.slice();
+      showResult();
+    } catch (e) {
+      console.error("replay failed", e);
+      alert("再判定に失敗しました：" + e.message);
+    }
+  });
+}
+
+function buildQuestions() {
+  const list = document.getElementById("questionList");
+  questions.forEach((q, idx) => {
+    const card = document.createElement("div");
+    card.className = "question-card";
+    card.id = `q${idx}`;
+
+    const header = document.createElement("div");
+    header.className = "question-header";
+    header.innerHTML = `<div class="question-num">Q${idx+1}</div><div class="question-text">${q.text}</div>`;
+
+    const row = document.createElement("div");
+    row.className = "options-row";
+
+    const labelL = document.createElement("div");
+    labelL.className = "scale-label left";
+    labelL.textContent = "とても当てはまる";
+
+    const opts = document.createElement("div");
+    opts.className = "options";
+
+    for (let i = 0; i < 6; i++) {
+      const btn = document.createElement("div");
+      btn.className = `option ${optSizes[i]} ${optColors[i]}`;
+      btn.onclick = () => selectOption(idx, 6 - i, card);
+      opts.appendChild(btn);
+    }
+
+    const labelR = document.createElement("div");
+    labelR.className = "scale-label right";
+    labelR.textContent = "全く当てはまらない";
+
+    row.appendChild(labelL);
+    row.appendChild(opts);
+    row.appendChild(labelR);
+
+    card.appendChild(header);
+    card.appendChild(row);
+    list.appendChild(card);
+  });
+}
+
+function selectOption(idx, val, card) {
+  // 既に回答済みで値が変わる場合は変更カウント
+  if (answers[idx] !== null && answers[idx] !== val) {
+    answerChanges[idx]++;
+  }
+  if (quizStartTime) answerTimes[idx] = Date.now() - quizStartTime;
+  answers[idx] = val;
+  const opts = card.querySelectorAll(".option");
+  opts.forEach((o, i) => {
+    o.classList.toggle("selected", 6 - i === val);
+    if (6 - i === val) {
+      o.classList.remove("kirari");
+      void o.offsetWidth;
+      o.classList.add("kirari");
+    }
+  });
+  card.classList.add("answered");
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById("progressText").textContent = `${answered} / 40`;
+  const bar = document.getElementById("progressBar");
+  bar.style.width = `${(answered / 40) * 100}%`;
+  bar.classList.remove("kirari");
+  void bar.offsetWidth;
+  bar.classList.add("kirari");
+  const rem = 40 - answered;
+  document.getElementById("remaining").textContent = rem > 0 ? `あと${rem}問` : "";
+  document.getElementById("submitBtn").disabled = rem > 0;
+}
+
+function calcScores() {
+  const axes = { E:[], O:[], A:[], C:[], N:[] };
+  questions.forEach((q, i) => {
+    let val = answers[i];
+    if (q.rev) val = 7 - val;  // 6段階: 1↔6, 2↔5, 3↔4
+    axes[q.axis].push(val);
+  });
+  const scores = {};
+  for (const [k, vals] of Object.entries(axes)) {
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+    scores[k] = { avg, pct: Math.round(((avg - 1) / 5) * 100) };
+  }
+  return scores;
+}
+
+function getType(scores) {
+  let mbti = "";
+  mbti += scores.E.avg >= 3.5 ? "E" : "I";  // 6段階の中央=3.5
+  mbti += scores.O.avg >= 3.5 ? "N" : "S";
+  mbti += scores.A.avg >= 3.5 ? "F" : "T";
+  mbti += scores.C.avg >= 3.5 ? "J" : "P";
+  const identity = scores.N.avg < 3.5 ? "light" : "shadow";
+  return { mbti, identity };
+}
+
+// 境界判定：avgが3.5±0.2のレンジにある軸を検出
+function detectBoundaries(scores) {
+  const TH = 0.2;
+  const axes = ["E", "O", "A", "C", "N"];
+  return axes.filter(ax => Math.abs(scores[ax].avg - 3.5) <= TH);
+}
+
+// 境界の軸を逆転させた「もう一つの型」を計算
+function getAltType(mbti, identity, axes) {
+  const flipMap = { E:[0, "E","I"], O:[1, "N","S"], A:[2, "F","T"], C:[3, "J","P"] };
+  let altMbti = mbti.split("");
+  let altIdentity = identity;
+  for (const ax of axes) {
+    if (ax === "N") {
+      altIdentity = identity === "light" ? "shadow" : "light";
+    } else {
+      const [pos, hi, lo] = flipMap[ax];
+      altMbti[pos] = altMbti[pos] === hi ? lo : hi;
+    }
+  }
+  return { mbti: altMbti.join(""), identity: altIdentity };
+}
+
+function hellProceed() {
+  document.getElementById("hellGate").classList.remove("active");
+  window.__nanimonoBypassGuard = true;
+  window.__nanimonoHellProceeded = true;
+  // プレビュー時は回答が無いので適当に埋める
+  if (answers.some(a => a === null)) {
+    answers = new Array(questions.length).fill(1);
+  }
+  showResult();
+}
+
+async function showResult() {
+  if (answers.some(a => a === null)) return;
+
+  // いたずら回答検出（fill/replayはバイパス）
+  if (!window.__nanimonoBypassGuard) {
+    const allSame = answers.every(a => a === answers[0]);
+    const totalSec = quizStartTime ? (Date.now() - quizStartTime) / 1000 : 999;
+    const tooFast = totalSec < Math.max(15, answers.length * 0.6); // 1問0.6秒未満 or 全体15秒未満
+    if (allSame || tooFast) {
+      window.__nanimonoLazyFlag = allSame ? "allSame" : "tooFast";
+      const reason = allSame
+        ? "<em>全ての問いに同じ印を遺した</em>者よ。<br>その魂は、揺らがぬほどに乾いているのか。"
+        : `<em>${Math.round(totalSec)}秒で40問</em>を駆け抜けた者よ。<br>その早さは、覚悟か、それとも逃避か。`;
+      document.getElementById("hellBody").innerHTML = reason;
+      // 火の粉生成
+      const sparks = document.getElementById("hellSparks");
+      sparks.innerHTML = "";
+      const sparkCount = window.matchMedia('(max-width: 640px)').matches ? 18 : 36;
+      let sh = "";
+      for (let i = 0; i < sparkCount; i++) {
+        const left = Math.random() * 100;
+        const sz = 2 + Math.random() * 4;
+        const dur = 4 + Math.random() * 5;
+        const delay = Math.random() * 5;
+        const tx = (Math.random() - 0.5) * 80;
+        sh += `<span style="left:${left}%;--sz:${sz}px;--tx:${tx}px;animation-duration:${dur}s;animation-delay:${delay}s;"></span>`;
+      }
+      sparks.innerHTML = sh;
+      document.getElementById("hellGate").classList.add("active");
+      return; // ボタン操作待ち
+    }
+  }
+
+  let scores = calcScores();
+
+  // 境界の人判定：揺らぎ軸を検出してタイブレーカーへ
+  const boundaryAxes = detectBoundaries(scores);
+  let wasBoundary = boundaryAxes.length > 0;
+  let tiebreakerChoices = [];
+  if (wasBoundary) {
+    const tbResult = await showTiebreaker(boundaryAxes, scores);
+    scores = tbResult.scores;
+    tiebreakerChoices = tbResult.choices;
+  }
+
+  // タイブレーカー後のスコアで再判定
+  const { mbti, identity } = recomputeType(scores);
+  const variant = identity === "light" ? "A" : "T";
+  const typeId = `${mbti}-${variant}`;
+
+  // === デバッグログ ===
+  console.log("===== ナニモノ診断スコア =====");
+  console.log(`判定: ${mbti}-${variant} (${identity})`);
+  console.log(`揺らぎ突破: ${wasBoundary ? boundaryAxes.join(",") : "なし"}`);
+  console.table({
+    E: { avg: scores.E.avg.toFixed(2), pct: scores.E.pct + "%", 判定: scores.E.avg >= 3.5 ? "E(外向)" : "I(内向)" },
+    O: { avg: scores.O.avg.toFixed(2), pct: scores.O.pct + "%", 判定: scores.O.avg >= 3.5 ? "N(直感)" : "S(現実)" },
+    A: { avg: scores.A.avg.toFixed(2), pct: scores.A.pct + "%", 判定: scores.A.avg >= 3.5 ? "F(感情)" : "T(論理)" },
+    C: { avg: scores.C.avg.toFixed(2), pct: scores.C.pct + "%", 判定: scores.C.avg >= 3.5 ? "J(計画)" : "P(柔軟)" },
+    N: { avg: scores.N.avg.toFixed(2), pct: scores.N.pct + "%", 判定: scores.N.avg < 3.5 ? "light(光)" : "shadow(影)" }
+  });
+  console.log("全回答:", answers.join(","));
+  console.log("===========================");
+
+  localStorage.setItem("nanimono_last", JSON.stringify({ typeId, date: new Date().toLocaleDateString("ja-JP") }));
+  localStorage.setItem("nanimono_myType", typeId);
+  localStorage.setItem("nanimono_lastScores", JSON.stringify(scores));
+  localStorage.setItem("nanimono_lastAnswers", JSON.stringify(answers));
+
+  // 揺らぎ突破バッジ用：境界の人だったかの記録（揺らぎ前の代替型も記録）
+  if (wasBoundary) {
+    // 揺らぎ前の判定でaltタイプを計算（パネルで「○○との二面性」を出すため）
+    const preScores = calcScores();
+    const preType = recomputeType(preScores);
+    const preTypeId = `${preType.mbti}-${preType.identity === "light" ? "A" : "T"}`;
+    const altInfo = getAltType(preType.mbti, preType.identity, boundaryAxes);
+    const altTypeId = `${altInfo.mbti}-${altInfo.identity === "light" ? "A" : "T"}`;
+    const possibleAlt = altTypeId === typeId ? preTypeId : altTypeId;
+    localStorage.setItem("nanimono_boundary", JSON.stringify({
+      primary: typeId,
+      possibleAlt: possibleAlt,
+      axes: boundaryAxes,
+      tiebreakerChoices: tiebreakerChoices,
+      passed: true
+    }));
+  } else {
+    localStorage.removeItem("nanimono_boundary");
+  }
+
+  // GASへログ送信
+  sendLog(typeId, scores);
+
+  // 召喚演出
+  const allTypes = await getAllTypes();
+  await showCeremony(typeId, allTypes);
+
+  // 結果ページへ
+  location.href = `result.html?type=${typeId}`;
+}
+
+function drawRadar(scores, identity) {
+  const isDark = document.body.classList.contains("dark");
+  const isShadow = identity === "shadow";
+  const mainColor = isShadow ? "rgba(231, 76, 60, 0.7)" : (isDark ? "rgba(201, 168, 76, 0.7)" : "rgba(124, 92, 191, 0.7)");
+  const fillColor = isShadow ? "rgba(231, 76, 60, 0.15)" : (isDark ? "rgba(201, 168, 76, 0.15)" : "rgba(124, 92, 191, 0.15)");
+  const gridColor = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)";
+  const labelColor = isDark ? "#aaa" : "#666";
+
+  new Chart(document.getElementById("radarChart"), {
+    type: "radar",
+    data: {
+      labels: ["外向性", "開放性", "協調性", "誠実性", "情緒感度"],
+      datasets: [{
+        data: [scores.E.pct, scores.O.pct, scores.A.pct, scores.C.pct, scores.N.pct],
+        borderColor: mainColor,
+        backgroundColor: fillColor,
+        borderWidth: 2,
+        pointBackgroundColor: mainColor,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        r: {
+          beginAtZero: true,
+          min: 0,
+          max: 100,
+          ticks: { stepSize: 25, display: false },
+          grid: { color: gridColor },
+          angleLines: { color: gridColor },
+          pointLabels: { color: labelColor, font: { size: 13, family: "'Hiragino Sans', 'Noto Sans JP', sans-serif" } }
+        }
+      }
+    }
+  });
+}
+
+async function fetchAiReport(scores, mbti, identity) {
+  const reportDiv = document.getElementById("aiReport");
+  reportDiv.style.display = "block";
+
+  const scorePcts = {};
+  for (const [k, v] of Object.entries(scores)) {
+    scorePcts[k] = v.pct;
+  }
+
+  try {
+    const res = await fetch("/api/diagnose", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ scores: scorePcts, mbti, identity })
+    });
+    const data = await res.json();
+
+    document.getElementById("rptOverview").textContent = data.overview;
+
+    const strDiv = document.getElementById("rptStrengths");
+    (data.strengths || []).forEach(s => {
+      strDiv.innerHTML += `<div class="report-item"><div class="report-item-name">◎ ${s.name}</div><div class="report-item-desc">${s.desc}</div></div>`;
+    });
+
+    const weakDiv = document.getElementById("rptWeaknesses");
+    (data.weaknesses || []).forEach(w => {
+      weakDiv.innerHTML += `<div class="report-item"><div class="report-item-name">△ ${w.name}</div><div class="report-item-desc">${w.desc}</div></div>`;
+    });
+
+    document.getElementById("rptGrowth").textContent = data.growth;
+
+    document.getElementById("aiLoading").style.display = "none";
+    document.getElementById("aiContent").style.display = "block";
+  } catch (e) {
+    document.getElementById("aiLoading").innerHTML = `<div class="loading-text" style="color:#c0392b">解説の取得に失敗しました</div>`;
+  }
+}
+
+// ============================================
+// タイブレーカー追加問・5軸×1問
+// ============================================
+// 軸別の対立カラー（左の選択肢色／右の選択肢色）
+const AXIS_PARTICLE_COLORS = {
+  E: { left: '#5da8cd', right: '#e8a85a' }, // 内向(青)・外向(暖)
+  O: { left: '#b89878', right: '#e8c450' }, // 実用(茶)・革新(金)
+  A: { left: '#7ab8d4', right: '#e87a8a' }, // 論理(冷)・感情(暖)
+  C: { left: '#e89a5a', right: '#9a8acf' }, // 即興(暖)・計画(冷)
+  N: { left: '#e8d4a0', right: '#d24a28' }  // 安定(金)・繊細(赤)
+};
+
+const TIEBREAKER_QUESTIONS = {
+  E: {
+    name: "内向と外向の境",
+    sub: "静けさか、賑わいか",
+    text: "久しぶりに集まりに呼ばれた。知らない人ばかりの場所。<br>そのあと、あなたを元気にするのは──",
+    A: { label: "一人で静かに過ごす時間", side: "low" },
+    B: { label: "誰かと話して笑い合う時間", side: "high" }
+  },
+  O: {
+    name: "実用と革新の境",
+    sub: "確実さか、新しさか",
+    text: "目の前に2つの道がある。一方はみんなが歩いた確かな道、もう一方はまだ誰も歩いていない道。<br>あなたが踏み出すのは──",
+    A: { label: "確実に着くと分かっている道", side: "low" },
+    B: { label: "まだ誰も歩いていない道", side: "high" }
+  },
+  A: {
+    name: "論理と感情の境",
+    sub: "真実か、温度か",
+    text: "信頼する人から「ねえ、これどう思う？」と意見を求められた。<br>本音と相手の望む答えがズレている──",
+    A: { label: "本音を伝える", side: "low" },
+    B: { label: "相手が望んでいる答えに寄せる", side: "high" }
+  },
+  C: {
+    name: "即興と計画の境",
+    sub: "その場か、計画か",
+    text: "旅行に出かけて、予定外のことが次々起きた。計画通りには進まなくなった──",
+    A: { label: "計画を手放して、その日のノリで楽しむ", side: "low" },
+    B: { label: "計画を組み直して、新しい道筋で楽しむ", side: "high" }
+  },
+  N: {
+    name: "確信と揺らぎの境",
+    sub: "確信か、揺らぎか",
+    text: "自分が選んだ道が正しいか、だれにも分からない瞬間が来た。<br>あなたを動かすのは──",
+    A: { label: "「これで合っている」という気持ち", side: "low" },
+    B: { label: "「もしかしたら違うかも」という問い", side: "high" }
+  }
+};
+
+function showTiebreakerIntro(axes) {
+  return new Promise(resolve => {
+    const overlay = document.getElementById("tiebreakerOverlay");
+    overlay.classList.add("active");
+    const total = axes.length;
+    overlay.innerHTML = `
+      <div class="tb-lightning"></div>
+      <div class="tb-bolt"></div>
+      <div class="tb-bolt b2"></div>
+      <div class="tb-entry-flash"></div>
+      <div class="tb-stage">
+        <div class="tb-eyebrow">— 揺らぎ判定 —</div>
+        <div class="tb-axis-name">${total}つの境</div>
+        <div class="tb-axis-sub">あなたの中で揺れている</div>
+        <div class="tb-question">境を ${total} つ抱えるあなたは、稀な存在。<br>順にひとつずつ、自分を確定していく──</div>
+      </div>
+    `;
+    // 3秒で次へ
+    setTimeout(resolve, 3200);
+  });
+}
+
+async function showTiebreaker(axes, scores) {
+  // 複数軸ならイントロ表示
+  if (axes.length >= 2) {
+    await showTiebreakerIntro(axes);
+  }
+  return new Promise(resolve => {
+    const overlay = document.getElementById("tiebreakerOverlay");
+    overlay.classList.add("active");
+    let idx = 0;
+    const total = axes.length;
+    const choicesRecord = [];
+    function nextAxis() {
+      if (idx >= axes.length) {
+        overlay.classList.remove("active");
+        overlay.innerHTML = "";
+        resolve({ scores, choices: choicesRecord });
+        return;
+      }
+      const ax = axes[idx];
+      const q = TIEBREAKER_QUESTIONS[ax];
+      // 軸対立粒子：左右から中央へ衝突
+      const cols = AXIS_PARTICLE_COLORS[ax] || { left: '#c89cff', right: '#c89cff' };
+      let particlesHtml = '<div class="tb-particles">';
+      const particleCount = window.matchMedia('(max-width: 640px)').matches ? 8 : 16;
+      for (let i = 0; i < particleCount; i++) {
+        // 左側：画面左20%以内から発生、中央へ向かって右にドリフト
+        const lLeft = Math.random() * 30;
+        const lDur = 7 + Math.random() * 6;
+        const lDelay = Math.random() * 7;
+        const lDriftX = (40 + Math.random() * 30); // vw単位で中央方向へ
+        const lSize = 2 + Math.random() * 3;
+        particlesHtml += `<span style="left:${lLeft}%;--sz:${lSize}px;--pc:${cols.left};--tx:${lDriftX}vw;animation-duration:${lDur}s;animation-delay:${lDelay}s;"></span>`;
+        // 右側：画面右20%以内から発生、中央へ向かって左にドリフト
+        const rLeft = 70 + Math.random() * 30;
+        const rDur = 7 + Math.random() * 6;
+        const rDelay = Math.random() * 7;
+        const rDriftX = -(40 + Math.random() * 30);
+        const rSize = 2 + Math.random() * 3;
+        particlesHtml += `<span style="left:${rLeft}%;--sz:${rSize}px;--pc:${cols.right};--tx:${rDriftX}vw;animation-duration:${rDur}s;animation-delay:${rDelay}s;"></span>`;
+      }
+      particlesHtml += '</div>';
+
+      const progressLabel = total > 1 ? `— 揺らぎ判定 ${idx+1} / ${total} —` : `— 揺らぎ判定 —`;
+      overlay.innerHTML = `
+        <div class="tb-lightning"></div>
+        ${particlesHtml}
+        <div class="tb-bolt"></div>
+        <div class="tb-bolt b2"></div>
+        <div class="tb-entry-flash"></div>
+        <div class="tb-stage">
+          <div class="tb-eyebrow">${progressLabel}</div>
+          <div class="tb-axis-name">${q.name}</div>
+          <div class="tb-axis-sub">${q.sub}</div>
+          <div class="tb-question">${q.text}</div>
+          <div class="tb-prompt">さぁ──あなたならどっち？</div>
+          <div class="tb-choices">
+            <button type="button" class="tb-choice left" data-choice="A">
+              <span class="tb-mark">🅐</span>${q.A.label}
+            </button>
+            <button type="button" class="tb-choice right" data-choice="B">
+              <span class="tb-mark">🅑</span>${q.B.label}
+            </button>
+          </div>
+        </div>
+      `;
+
+      // 軸名出現タイミングでカメラシェイク
+      const stage = overlay.querySelector(".tb-stage");
+      setTimeout(() => {
+        if (stage) {
+          stage.classList.add("shake");
+          setTimeout(() => stage.classList.remove("shake"), 600);
+        }
+      }, 700);
+      overlay.querySelectorAll(".tb-choice").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (btn.classList.contains("chosen")) return;
+          const choice = btn.dataset.choice;
+          const side = q[choice].side;
+          // スコア確定：lowなら2、highなら5に上書き（中央3.5を超えて確実に確定）
+          scores[ax].avg = side === "low" ? 2.0 : 5.0;
+          scores[ax].pct = side === "low" ? 25 : 80;
+          choicesRecord.push({
+            axis: ax,
+            name: q.name,
+            chosenLabel: q[choice].label,
+            sideChosen: side,
+            otherLabel: q[choice === "A" ? "B" : "A"].label
+          });
+          btn.classList.add("chosen");
+          setTimeout(() => {
+            idx++;
+            nextAxis();
+          }, 700);
+        });
+      });
+    }
+    nextAxis();
+  });
+}
+
+// 召喚演出（全員向け・儀式型）
+function showCeremony(typeId, allTypes) {
+  return new Promise(resolve => {
+    const overlay = document.getElementById("ceremonyOverlay");
+    const data = allTypes ? allTypes.find(t => t.id === typeId) : null;
+    const name = data ? data.name : "";
+    const fr = data ? (data.furigana || "") : "";
+    const heroSrc = `挿絵/${name}/${name}_${typeId}_hero.webp`;
+
+    // 金箔粒子を動的生成
+    let dustHtml = '<div class="cer-dust">';
+    for (let i = 0; i < 40; i++) {
+      const left = Math.random() * 100;
+      const dur = 8 + Math.random() * 10;
+      const delay = Math.random() * 8;
+      const drift = (Math.random() - 0.5) * 200;
+      const size = 2 + Math.random() * 3;
+      dustHtml += `<span style="left:${left}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px;"></span>`;
+    }
+    dustHtml += '</div>';
+
+    overlay.classList.add("active");
+    overlay.innerHTML = `
+      <div class="cer-pillar wide"></div>
+      <div class="cer-pillar"></div>
+      ${dustHtml}
+      <div class="cer-text heading">あなたが何者かを開示する</div>
+      <div class="cer-text subline">— 静かに、深く、その姿が映し出される —</div>
+    `;
+
+    // 1.6sでヒーロー画像召喚
+    setTimeout(() => {
+      const heroEl = document.createElement("div");
+      heroEl.className = "cer-hero-wrap show";
+      heroEl.innerHTML = `<img src="${heroSrc}" alt="${name}" onerror="this.style.display='none'">`;
+      overlay.appendChild(heroEl);
+    }, 1800);
+
+    // 3.8sで金フラッシュ
+    setTimeout(() => {
+      const flash = document.createElement("div");
+      flash.className = "cer-flash fire";
+      overlay.appendChild(flash);
+    }, 3800);
+
+    // 4.2sで名前表示
+    setTimeout(() => {
+      // ヘッダー削除
+      overlay.querySelectorAll(".cer-text").forEach(el => el.style.opacity = "0");
+      const reveal = document.createElement("div");
+      reveal.className = "cer-reveal show";
+      reveal.innerHTML = `
+        <div class="cer-reveal-lead">✦ あなたは ✦</div>
+        <div class="cer-reveal-name">${name}</div>
+        ${fr ? `<div class="cer-reveal-fr">${fr}</div>` : ""}
+      `;
+      overlay.appendChild(reveal);
+      const tap = document.createElement("div");
+      tap.className = "cer-tap";
+      tap.textContent = "タップで進む";
+      overlay.appendChild(tap);
+    }, 4200);
+
+    // タップ or 8秒経過で resolve
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      overlay.removeEventListener("click", finish);
+      resolve();
+    };
+    setTimeout(() => {
+      overlay.addEventListener("click", finish);
+    }, 5500);
+    setTimeout(finish, 12000);
+  });
+}
+
+// allDataのキャッシュ
+let _allTypesCache = null;
+async function getAllTypes() {
+  if (_allTypesCache) return _allTypesCache;
+  try {
+    const res = await fetch("nanimono_data.json");
+    _allTypesCache = await res.json();
+    return _allTypesCache;
+  } catch (e) {
+    console.warn("nanimono_data.json fetch failed", e);
+    return null;
+  }
+}
+
+// MBTI判定をスコアから再計算
+function recomputeType(scores) {
+  let mbti = "";
+  mbti += scores.E.avg >= 3.5 ? "E" : "I";
+  mbti += scores.O.avg >= 3.5 ? "N" : "S";
+  mbti += scores.A.avg >= 3.5 ? "F" : "T";
+  mbti += scores.C.avg >= 3.5 ? "J" : "P";
+  const identity = scores.N.avg < 3.5 ? "light" : "shadow";
+  return { mbti, identity };
+}
+
+</script>
+
+</body>
+</html>
