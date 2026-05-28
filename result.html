@@ -3647,7 +3647,7 @@ function renderResult(data, allData) {
 
   // 揺らぎ突破バッジ：境界の人がタイブレーカーを抜けた場合のみ表示
   try {
-    const boundary = JSON.parse(localStorage.getItem("nanimono_boundary") || "null");
+    const boundary = loadBoundary();
     if (boundary && boundary.passed && boundary.primary === data.id) {
       const banner = document.createElement("div");
       banner.className = "boundary-banner";
@@ -4012,7 +4012,7 @@ function renderPreview(data, myType, allData) {
 
   // 境界の人バナー（プレビュー版でも自分のboundaryに該当する型なら表示）
   try {
-    const boundary = JSON.parse(localStorage.getItem("nanimono_boundary") || "null");
+    const boundary = loadBoundary();
     if (boundary && boundary.passed && boundary.primary === data.id) {
       const banner = document.createElement("div");
       banner.className = "boundary-banner";
@@ -4233,6 +4233,21 @@ document.addEventListener("click", () => {
   closePick();
 });
 
+// 揺らぎ情報をURL/localStorage両対応で読み込む
+function loadBoundary() {
+  try {
+    const bdParam = new URLSearchParams(location.search).get("bd");
+    if (bdParam) {
+      return JSON.parse(decodeURIComponent(bdParam));
+    }
+  } catch(e) {}
+  try {
+    return JSON.parse(localStorage.getItem("nanimono_boundary") || "null");
+  } catch(e) {
+    return null;
+  }
+}
+
 function getCardUrl(anchor, src) {
   const qs = new URLSearchParams(location.search);
   qs.delete("self");
@@ -4243,6 +4258,14 @@ function getCardUrl(anchor, src) {
   if (myNick) qs.set("ref", myNick);
   // 経路（どのSNS経由か）を刻む
   if (src) qs.set("src", src);
+  // 揺らぎ突破バッジ情報をURLに乗せる（受け手が再診断せず見られるように）
+  try {
+    const bd = JSON.parse(localStorage.getItem("nanimono_boundary") || "null");
+    const myType = new URLSearchParams(location.search).get("type");
+    if (bd && bd.passed && bd.primary === myType) {
+      qs.set("bd", encodeURIComponent(JSON.stringify(bd)));
+    }
+  } catch(e) {}
   const base = location.origin + location.pathname + "?" + qs.toString();
   return anchor ? base + "#card-" + anchor : base;
 }
