@@ -4386,7 +4386,10 @@ function shareToX(e) {
     const forceSelf = qs.get("self") === "1";
     const forcePreview = qs.get("preview") === "1";
     const forceFresh = qs.get("fresh") === "1";
-    if (forceSelf) localStorage.setItem("nanimono_myType", typeId);
+    // self=1：本人ビュー表示する。ただし既存myTypeがある時は上書きしない（他人のURL開いても自分のデータ守る）
+    if (forceSelf && !localStorage.getItem("nanimono_myType")) {
+      localStorage.setItem("nanimono_myType", typeId);
+    }
     const myType = forceFresh ? null : localStorage.getItem("nanimono_myType");
     const isOwnType = !forcePreview && (forceSelf || (myType && myType === typeId));
     if (isOwnType) {

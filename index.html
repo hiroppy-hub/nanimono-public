@@ -1648,7 +1648,9 @@ function goLastResult() {
   const last = localStorage.getItem("nanimono_last");
   if (!last) return;
   const { typeId } = JSON.parse(last);
-  location.href = `result.html?type=${typeId}`;
+  // myTypeを「前回の結果」に再同期（他人のURL閲覧でmyTypeが上書きされてた場合の救済）
+  localStorage.setItem("nanimono_myType", typeId);
+  location.href = `result.html?type=${typeId}&self=1`;
 }
 
 function startQuiz() {
