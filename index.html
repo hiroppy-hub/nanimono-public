@@ -1592,14 +1592,34 @@ function sendLog(typeId, scores) {
   const duration = quizStartTime ? Math.round((Date.now() - quizStartTime) / 1000) : 0;
   const changes = answerChanges.reduce((a, b) => a + b, 0);
   // 日本語名を組み立てる：賢者（INTJ-A）形式
-  const _mbti = (typeId || "").split("-")[0];
-  const _suffix = (typeId || "").split("-")[1];
-  const _jaName = (typeMap[_mbti] && typeMap[_mbti][_suffix === "A" ? "light" : "shadow"]) || "";
-  const typeLabel = _jaName ? `${_jaName}（${typeId}）` : typeId;
+  const _toLabel = (id) => {
+    const m = (id || "").split("-")[0];
+    const s = (id || "").split("-")[1];
+    const ja = (typeMap[m] && typeMap[m][s === "A" ? "light" : "shadow"]) || "";
+    return ja ? `${ja}（${id}）` : id;
+  };
+  const typeLabel = _toLabel(typeId);
+  // 揺らぎ突破・多面性情報
+  let boundaryPassed = false, boundaryAlts = "", boundaryAxes = "", facets = 1;
+  try {
+    const bd = JSON.parse(localStorage.getItem("nanimono_boundary") || "null");
+    if (bd) {
+      boundaryPassed = !!bd.passed;
+      const alts = (bd.possibleAlts && bd.possibleAlts.length) ? bd.possibleAlts
+                 : (bd.possibleAlt ? [bd.possibleAlt] : []);
+      boundaryAlts = alts.map(_toLabel).join("、");
+      boundaryAxes = (bd.axes || []).join(",");
+      facets = 1 + alts.length;
+    }
+  } catch(e) {}
   const payload = {
     nickname: userNickname || localStorage.getItem("nanimono_nickname") || "",
     birthday: userBirthday || localStorage.getItem("nanimono_birthday") || "",
     type: typeLabel,
+    boundaryPassed: boundaryPassed,
+    boundaryAlts: boundaryAlts,
+    boundaryAxes: boundaryAxes,
+    facets: facets,
     ref: getRef(),
     src: getSrc(),
     duration: duration,
