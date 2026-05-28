@@ -4389,6 +4389,13 @@ function shareToX(e) {
     // self=1：本人ビュー表示する。ただし既存myTypeがある時は上書きしない（他人のURL開いても自分のデータ守る）
     if (forceSelf && !localStorage.getItem("nanimono_myType")) {
       localStorage.setItem("nanimono_myType", typeId);
+      // 前回の結果としても保存（TOPの「↻ 前回」ボタンから戻れるよう）
+      if (!localStorage.getItem("nanimono_last")) {
+        localStorage.setItem("nanimono_last", JSON.stringify({
+          typeId: typeId,
+          date: new Date().toLocaleDateString("ja-JP")
+        }));
+      }
     }
     const myType = forceFresh ? null : localStorage.getItem("nanimono_myType");
     const isOwnType = !forcePreview && (forceSelf || (myType && myType === typeId));
