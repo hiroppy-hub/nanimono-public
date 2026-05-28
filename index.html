@@ -1767,6 +1767,7 @@ function buildQuestions() {
 }
 
 function selectOption(idx, val, card) {
+  const wasFirstAnswer = answers[idx] === null;
   // 既に回答済みで値が変わる場合は変更カウント
   if (answers[idx] !== null && answers[idx] !== val) {
     answerChanges[idx]++;
@@ -1784,6 +1785,21 @@ function selectOption(idx, val, card) {
   });
   card.classList.add("answered");
   updateProgress();
+
+  // 初回回答時のみ次の未回答質問へ自動スクロール（再回答時は動かない）
+  if (wasFirstAnswer) {
+    setTimeout(() => {
+      const nextIdx = answers.findIndex((a, i) => i > idx && a === null);
+      if (nextIdx !== -1) {
+        const nextCard = document.getElementById(`q${nextIdx}`);
+        if (nextCard) nextCard.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else if (answers.every(a => a !== null)) {
+        // 全問完了時は結果ボタンへスクロール
+        const submit = document.getElementById("submitBtn");
+        if (submit) submit.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 400);
+  }
 }
 
 function updateProgress() {
