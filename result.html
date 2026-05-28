@@ -3368,8 +3368,11 @@ function wireBoundaryBanner(banner, boundary, allData) {
   const toggles = banner.querySelectorAll("[data-bb-toggle]");
   if (!panel) return;
 
-  // パネル中身を生成
-  const altData = boundary.possibleAlt ? allData.find(d => d.id === boundary.possibleAlt) : null;
+  // パネル中身を生成（多面性対応）
+  const altIds = boundary.possibleAlts && boundary.possibleAlts.length
+    ? boundary.possibleAlts
+    : (boundary.possibleAlt ? [boundary.possibleAlt] : []);
+  const altDataList = altIds.map(id => allData.find(d => d.id === id)).filter(Boolean);
   let html = "";
   if (boundary.tiebreakerChoices && boundary.tiebreakerChoices.length) {
     html += `
@@ -3384,12 +3387,26 @@ function wireBoundaryBanner(banner, boundary, allData) {
       </div>
     `;
   }
-  if (altData) {
+  const axisCount = (boundary.axes && boundary.axes.length) || 0;
+  if (axisCount >= 3) {
+    // 3軸以上は揺らぎが大きすぎて意味のあるalt表示ができない
     html += `
       <div class="bb-panel-section">
-        <div class="bb-panel-head">— 二面性の可能性 —</div>
+        <div class="bb-panel-head">— 揺らぎが深い —</div>
         <div class="bb-panel-line">
-          あなたは <b>${altData.name}</b> との二面性の可能性もあります。
+          あなたの揺らぎは複数の軸にまたがっています。<br>
+          時間をおいて、もう一度落ち着いて受けてみてください。
+        </div>
+      </div>
+    `;
+  } else if (altDataList.length) {
+    const label = altDataList.length >= 2 ? "三面性" : "二面性";
+    const names = altDataList.map(d => `<b>${d.name}</b>`).join("、");
+    html += `
+      <div class="bb-panel-section">
+        <div class="bb-panel-head">— ${label}の可能性 —</div>
+        <div class="bb-panel-line">
+          あなたは ${names} との${label}の可能性もあります。
         </div>
       </div>
     `;

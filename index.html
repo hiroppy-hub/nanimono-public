@@ -1927,18 +1927,24 @@ async function showResult() {
   localStorage.setItem("nanimono_lastScores", JSON.stringify(scores));
   localStorage.setItem("nanimono_lastAnswers", JSON.stringify(answers));
 
-  // 揺らぎ突破バッジ用：境界の人だったかの記録（揺らぎ前の代替型も記録）
+  // 揺らぎ突破バッジ用：境界の人だったかの記録（揺らぎ前の代替型も全て記録）
   if (wasBoundary) {
-    // 揺らぎ前の判定でaltタイプを計算（パネルで「○○との二面性」を出すため）
+    // 揺らぎ前のタイプを基準に、境界軸の2^N通りの組み合わせを全列挙
     const preScores = calcScores();
     const preType = recomputeType(preScores);
-    const preTypeId = `${preType.mbti}-${preType.identity === "light" ? "A" : "T"}`;
-    const altInfo = getAltType(preType.mbti, preType.identity, boundaryAxes);
-    const altTypeId = `${altInfo.mbti}-${altInfo.identity === "light" ? "A" : "T"}`;
-    const possibleAlt = altTypeId === typeId ? preTypeId : altTypeId;
+    const n = boundaryAxes.length;
+    const altSet = new Set();
+    for (let mask = 0; mask < (1 << n); mask++) {
+      const flipAxes = boundaryAxes.filter((_, i) => (mask >> i) & 1);
+      const alt = getAltType(preType.mbti, preType.identity, flipAxes);
+      const altId = `${alt.mbti}-${alt.identity === "light" ? "A" : "T"}`;
+      if (altId !== typeId) altSet.add(altId);
+    }
+    const possibleAlts = Array.from(altSet);
     localStorage.setItem("nanimono_boundary", JSON.stringify({
       primary: typeId,
-      possibleAlt: possibleAlt,
+      possibleAlt: possibleAlts[0] || null,  // 後方互換
+      possibleAlts: possibleAlts,
       axes: boundaryAxes,
       tiebreakerChoices: tiebreakerChoices,
       passed: true
