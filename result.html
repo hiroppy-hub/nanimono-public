@@ -4234,11 +4234,29 @@ document.addEventListener("click", () => {
 });
 
 // 揺らぎ情報をURL/localStorage両対応で読み込む
+// URL形式：bd=alt1,alt2@axis1,axis2  例: bd=ENTJ-T@C
 function loadBoundary() {
   try {
-    const bdParam = new URLSearchParams(location.search).get("bd");
+    const qs = new URLSearchParams(location.search);
+    const bdParam = qs.get("bd");
     if (bdParam) {
-      return JSON.parse(decodeURIComponent(bdParam));
+      const primary = qs.get("type") || "";
+      // 旧形式（JSON）後方互換
+      if (bdParam.startsWith("%7B") || bdParam.startsWith("{")) {
+        return JSON.parse(decodeURIComponent(bdParam));
+      }
+      // 新形式（圧縮）
+      const [altsStr, axesStr] = bdParam.split("@");
+      const alts = altsStr ? altsStr.split(",").filter(Boolean) : [];
+      const axes = axesStr ? axesStr.split(",").filter(Boolean) : [];
+      return {
+        primary: primary,
+        possibleAlts: alts,
+        possibleAlt: alts[0] || null,
+        axes: axes,
+        tiebreakerChoices: [],
+        passed: true
+      };
     }
   } catch(e) {}
   try {
@@ -4258,12 +4276,16 @@ function getCardUrl(anchor, src) {
   if (myNick) qs.set("ref", myNick);
   // 経路（どのSNS経由か）を刻む
   if (src) qs.set("src", src);
-  // 揺らぎ突破バッジ情報をURLに乗せる（受け手が再診断せず見られるように）
+  // 揺らぎ突破バッジ情報をURLに乗せる（圧縮形式：alts@axes）
   try {
     const bd = JSON.parse(localStorage.getItem("nanimono_boundary") || "null");
     const myType = new URLSearchParams(location.search).get("type");
     if (bd && bd.passed && bd.primary === myType) {
-      qs.set("bd", encodeURIComponent(JSON.stringify(bd)));
+      const alts = (bd.possibleAlts && bd.possibleAlts.length)
+        ? bd.possibleAlts
+        : (bd.possibleAlt ? [bd.possibleAlt] : []);
+      const axes = bd.axes || [];
+      qs.set("bd", alts.join(",") + "@" + axes.join(","));
     }
   } catch(e) {}
   const base = location.origin + location.pathname + "?" + qs.toString();
