@@ -168,12 +168,12 @@ body.shadow-mode {
 .boundary-banner .bb-panel {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease, padding 0.4s ease, margin 0.4s ease;
+  transition: max-height 0.18s ease, padding 0.18s ease, margin 0.18s ease;
   padding: 0 4px;
   text-align: center;
 }
 .boundary-banner .bb-panel.open {
-  max-height: 1500px;
+  max-height: 2000px;
   padding: 16px 4px 4px;
   margin-top: 14px;
   border-top: 1px dashed rgba(184, 152, 92, 0.4);
@@ -183,10 +183,13 @@ body.shadow-mode {
 }
 .boundary-banner .bb-panel-section:last-child { margin-bottom: 0; }
 .boundary-banner .bb-panel-head {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.4em;
   color: #8b6f3f;
   margin-bottom: 8px;
+}
+@media (max-width: 480px) {
+  .boundary-banner .bb-panel-head { font-size: 12px; letter-spacing: 0.3em; }
 }
 .boundary-banner .bb-panel-line {
   font-size: 13px;
@@ -216,10 +219,10 @@ body.shadow-mode {
 }
 /* 希少度バナー：1行コンパクト表示 */
 .boundary-banner.rarity-banner {
-  box-shadow: 0 2px 8px rgba(184, 152, 92, 0.08);
+  /* 揺らぎ突破バナーと同等のシャドウに統一（インパクト確保） */
 }
 .boundary-banner.rarity-banner .bb-panel {
-  transition: max-height 0.2s ease, padding 0.2s ease, margin 0.2s ease;
+  transition: max-height 0.15s ease, padding 0.15s ease, margin 0.15s ease;
 }
 .boundary-banner.rarity-banner .bb-panel.open {
   max-height: 400px;
@@ -249,6 +252,24 @@ body.shadow-mode {
 .boundary-banner.rarity-banner .bb-panel-line-inline {
   display: flex; flex-wrap: wrap; align-items: center;
   justify-content: center; gap: 4px 8px;
+}
+.boundary-banner .bb-role-meaning {
+  font-family: 'Noto Serif JP', serif;
+  text-align: justify;
+  line-height: 1.95;
+  font-size: 13.5px;
+  color: #4a3a2f;
+  padding: 0 4px;
+}
+.boundary-banner .bb-panel-note {
+  margin-top: 8px;
+  font-size: 10.5px;
+  color: #9a8a6a;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+@media (max-width: 480px) {
+  .boundary-banner .bb-role-meaning { font-size: 12.5px; line-height: 1.85; }
 }
 .boundary-banner.rarity-banner .bb-sep {
   opacity: 0.4;
@@ -3412,6 +3433,18 @@ function getRoleTag(pct) {
   return "世界の柱";
 }
 
+// 役割タグの意味文（タップで開くパネル内に表示）
+function getRoleMeaning(tag) {
+  const map = {
+    "孤高":   "百人に一人。隣を歩く同類は、たぶん居ない。理解されないことに慣れた代わりに、あなただけが見える景色がある。孤独は才能の代償であり、特権でもある。",
+    "希少":   "多数決の中では浮いてしまう。けれど少数だからこそ磨かれる感性がある。違うと言われ続けて辿り着いた今のあなたは、確かに研ぎ澄まされている。",
+    "稀有":   "同じ感覚を持つ人と出会えること自体が、ささやかな奇跡。あなたの視点は世界に薄く散らばっていて、見つけ合うのが難しい。だからこそ、出会いの一つひとつが濃い。",
+    "煌めき": "あなたが通ったあとには、なぜか空気が明るくなる。世界の彩度を上げる役。数は多くないけれど、いる場所が必ず華やぐ稀有な人。",
+    "世界の柱": "あなたは社会の根幹を支える存在。多くの人がこの役割を担うからこそ、世界は崩れずに回っている。目立たないけれど、居なくなれば一番に世界が止まる人。"
+  };
+  return map[tag] || "";
+}
+
 // 32体の希少順ソート用
 const allTypeIds = Object.keys(typePercentage)
   .sort((a, b) => typePercentage[a] - typePercentage[b]);
@@ -3438,7 +3471,19 @@ function createRarityBanner(data, altDataList) {
   const WORLD_POP = 8_100_000_000;
   const jpPeople = _formatPeople(JP_POP * pct / 100);
 
-  let panelHTML = `
+  // 揺らぎ突破者は単一カテゴリに収まらないため意味文セクションをスキップ
+  const isMultiFacet = altDataList.length > 0;
+  const roleMeaning = getRoleMeaning(roleTag);
+  let panelHTML = "";
+  if (!isMultiFacet) {
+    panelHTML += `
+      <div class="bb-panel-section">
+        <div class="bb-panel-head">— ${roleTag} とは —</div>
+        <div class="bb-panel-line bb-role-meaning">${roleMeaning}</div>
+      </div>
+    `;
+  }
+  panelHTML += `
     <div class="bb-panel-section">
       <div class="bb-panel-head">— あなたの位置 —</div>
       <div class="bb-panel-line bb-panel-line-inline">
@@ -3464,8 +3509,9 @@ function createRarityBanner(data, altDataList) {
         <div class="bb-panel-line">
           ${names.map(n => `<b>${n}</b>`).join(" × ")}<br>
           世界の約 <b>${_formatPct(combinedPct)}</b><br>
-          世界に <b>${worldPeople}</b> ／ 日本に <b>${jpPeople2}</b><br>
-          <span class="bb-axis">のレジェンド</span>
+          世界に <b>${worldPeople}</b> ／ 日本に <b>${jpPeople2}</b> だけの<br>
+          <span class="bb-axis">レジェンド級存在</span>
+          <div class="bb-panel-note">※暫定値（独立試行の仮説計算・実測ではない）</div>
         </div>
       </div>
     `;
@@ -3475,7 +3521,7 @@ function createRarityBanner(data, altDataList) {
   banner.className = "boundary-banner rarity-banner";
   banner.innerHTML = `
     <div class="bb-textcol">
-      <div class="bb-title">あなたの希少度</div>
+      <div class="bb-title">あなたの希少度！</div>
       <div class="bb-body">
         <b>${data.name}</b> は <span class="bb-axis">${roleTag}</span>
         <span class="bb-tap-hint">タップで詳細 ▾</span>
@@ -3570,17 +3616,61 @@ function wireBoundaryBanner(banner, boundary, allData) {
       </div>
     `;
   }
+
+  // 突破者にも位置・多面性込みの希少度を統合表示
+  const primaryData = allData.find(d => d.id === boundary.primary);
+  if (primaryData) {
+    const pct = typePercentage[primaryData.id] || 0;
+    const JP_POP = 124_000_000;
+    const WORLD_POP = 8_100_000_000;
+    const jpPeople = _formatPeople(JP_POP * pct / 100);
+    html += `
+      <div class="bb-panel-section">
+        <div class="bb-panel-head">— あなたの位置 —</div>
+        <div class="bb-panel-line bb-panel-line-inline">
+          <span>世界の約 <b>${_formatPct(pct)}</b></span>
+          <span class="bb-sep">｜</span>
+          <span>日本に <b>${jpPeople}</b></span>
+        </div>
+      </div>
+    `;
+    if (altDataList.length) {
+      let combinedPct = pct;
+      const names2 = [primaryData.name];
+      altDataList.forEach(d => {
+        combinedPct = combinedPct * (typePercentage[d.id] || 0) / 100;
+        names2.push(d.name);
+      });
+      const worldPeople = _formatPeople(WORLD_POP * combinedPct / 100);
+      const jpPeople2 = _formatPeople(JP_POP * combinedPct / 100);
+      html += `
+        <div class="bb-panel-section">
+          <div class="bb-panel-head">— 多面性込みの希少度 —</div>
+          <div class="bb-panel-line">
+            ${names2.map(n => `<b>${n}</b>`).join(" × ")}<br>
+            世界の約 <b>${_formatPct(combinedPct)}</b><br>
+            世界に <b>${worldPeople}</b> ／ 日本に <b>${jpPeople2}</b> だけの<br>
+            <span class="bb-axis">レジェンド級存在</span>
+            <div class="bb-panel-note">※暫定値（独立試行の仮説計算・実測ではない）</div>
+          </div>
+        </div>
+      `;
+    }
+  }
   panel.innerHTML = html || `<div class="bb-panel-line">揺らぎの記録はありません。</div>`;
 
-  // クリックでパネル展開
+  // クリックでパネル展開（バナー全体をクリッカブルに統一）
   const ornament = banner.querySelector(".bb-side-ornament");
   const toggleBtn = banner.querySelector(".bb-toggle");
-  const togglePanel = () => {
+  const togglePanel = (e) => {
+    if (e) e.stopPropagation();
     const isOpen = panel.classList.toggle("open");
     if (ornament) ornament.classList.toggle("open", isOpen);
     if (toggleBtn) toggleBtn.classList.toggle("open", isOpen);
   };
   toggles.forEach(t => t.addEventListener("click", togglePanel));
+  banner.style.cursor = "pointer";
+  banner.addEventListener("click", togglePanel);
 }
 
 function buildBoundaryCompat(primary, alt, allData) {
@@ -3811,11 +3901,11 @@ function renderResult(data, allData) {
       const banner = document.createElement("div");
       banner.className = "boundary-banner";
       banner.innerHTML = `
-        <button type="button" class="bb-side-ornament" data-bb-toggle aria-label="詳細を見る">✦</button>
         <div class="bb-textcol">
           <div class="bb-title">揺らぎ突破</div>
           <div class="bb-body">
-            あなたは揺らぎを抜けて <b>${data.name}</b> として目覚めた<span class="bb-axis">特別な存在</span>です
+            あなたは揺らぎを抜けて <b>${data.name}</b> として目覚めた<span class="bb-axis">特別な存在</span>です。
+            <span class="bb-tap-hint">タップで詳細 ▾</span>
           </div>
         </div>
         <div class="bb-panel" data-bb-panel></div>
@@ -3826,26 +3916,16 @@ function renderResult(data, allData) {
     }
   } catch(e) { console.warn("boundary render failed", e); }
 
-  // 希少度バナー（全員表示）：あなたの位置 + 多面性込みの希少度
+  // 希少度バナー：突破者は揺らぎ突破バナーに統合表示するためスキップ。単独タイプの人だけ表示。
   try {
     const boundary2 = (typeof loadBoundary === "function") ? loadBoundary() : null;
-    const altIds2 = (boundary2 && boundary2.passed && boundary2.primary === data.id)
-      ? (boundary2.possibleAlts && boundary2.possibleAlts.length
-          ? boundary2.possibleAlts
-          : (boundary2.possibleAlt ? [boundary2.possibleAlt] : []))
-      : [];
-    const altDataList2 = altIds2.map(id => allData.find(d => d.id === id)).filter(Boolean);
-    const rarityBanner = createRarityBanner(data, altDataList2);
-    const mc = document.getElementById("mainContent");
-    const existingBoundary = mc.querySelector(".boundary-banner");
-    if (existingBoundary && existingBoundary.nextSibling) {
-      mc.insertBefore(rarityBanner, existingBoundary.nextSibling);
-    } else if (existingBoundary) {
-      mc.appendChild(rarityBanner);
-    } else {
+    const isBreakthrough = !!(boundary2 && boundary2.passed && boundary2.primary === data.id);
+    if (!isBreakthrough) {
+      const rarityBanner = createRarityBanner(data, []);
+      const mc = document.getElementById("mainContent");
       mc.insertBefore(rarityBanner, mc.firstChild);
+      wireRarityBanner(rarityBanner);
     }
-    wireRarityBanner(rarityBanner);
   } catch(e) { console.warn("rarity render failed", e); }
 
   // 画像クリックでライトボックス
@@ -4198,11 +4278,11 @@ function renderPreview(data, myType, allData) {
       const banner = document.createElement("div");
       banner.className = "boundary-banner";
       banner.innerHTML = `
-        <button type="button" class="bb-side-ornament" data-bb-toggle aria-label="詳細を見る">✦</button>
         <div class="bb-textcol">
           <div class="bb-title">揺らぎ突破</div>
           <div class="bb-body">
-            あなたは揺らぎを抜けて <b>${data.name}</b> として目覚めた<span class="bb-axis">特別な存在</span>です
+            あなたは揺らぎを抜けて <b>${data.name}</b> として目覚めた<span class="bb-axis">特別な存在</span>です。
+            <span class="bb-tap-hint">タップで詳細 ▾</span>
           </div>
         </div>
         <div class="bb-panel" data-bb-panel></div>
@@ -4567,17 +4647,10 @@ function shareToX(e) {
     const forceSelf = qs.get("self") === "1";
     const forcePreview = qs.get("preview") === "1";
     const forceFresh = qs.get("fresh") === "1";
-    // self=1：本人ビューとして表示し、myTypeを上書き（URL一覧から各タイプ確認する用途に対応）
-    if (forceSelf) {
-      localStorage.setItem("nanimono_myType", typeId);
-      // 前回の結果としても保存（TOPの「↻ 前回」ボタンから戻れるよう）
-      if (!localStorage.getItem("nanimono_last")) {
-        localStorage.setItem("nanimono_last", JSON.stringify({
-          typeId: typeId,
-          date: new Date().toLocaleDateString("ja-JP")
-        }));
-      }
-    }
+    // self=1：本人ビューとして表示するだけ（myTypeは書き換えない）
+    // 旧仕様で myType を上書きしていたが、テストURLや他人のリンクを踏むと
+    // ユーザー本来の myType が消える事故が発生するため停止。
+    // myType の更新は診断完了時のみとする。
     const myType = forceFresh ? null : localStorage.getItem("nanimono_myType");
     const isOwnType = !forcePreview && (forceSelf || (myType && myType === typeId));
     if (isOwnType) {
