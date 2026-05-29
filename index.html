@@ -1627,7 +1627,7 @@ function sendLog(typeId, scores) {
     changes: changes,
     timezone: getTimezone(),
     gender: userGender || localStorage.getItem("nanimono_gender") || "",
-    answers: answers.slice(),
+    answers: (function(){ const byId = new Array(questions.length); questions.forEach((q, i) => { byId[q.id - 1] = answers[i]; }); return byId; })(),
     lazyFlag: window.__nanimonoLazyFlag || null,
     hellProceeded: !!window.__nanimonoHellProceeded
   };
@@ -1691,6 +1691,11 @@ function actuallyStartQuiz() {
   document.getElementById("quiz").style.display = "block";
   document.body.classList.add("quiz-active");
   quizStartTime = Date.now();
+  // 質問の表示順をシャッフル（Fisher-Yates）。各問のid/axis/revタグで集計するから軸ズレなし
+  for (let i = questions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [questions[i], questions[j]] = [questions[j], questions[i]];
+  }
   buildQuestions();
 }
 
@@ -1952,7 +1957,10 @@ async function showResult() {
   localStorage.setItem("nanimono_last", JSON.stringify({ typeId, date: new Date().toLocaleDateString("ja-JP") }));
   localStorage.setItem("nanimono_myType", typeId);
   localStorage.setItem("nanimono_lastScores", JSON.stringify(scores));
-  localStorage.setItem("nanimono_lastAnswers", JSON.stringify(answers));
+  // 表示順がシャッフルされているのでid順に並べ直して保存（replay再現用）
+  const answersById = new Array(questions.length);
+  questions.forEach((q, i) => { answersById[q.id - 1] = answers[i]; });
+  localStorage.setItem("nanimono_lastAnswers", JSON.stringify(answersById));
 
   // 揺らぎ突破バッジ用：境界の人だったかの記録（揺らぎ前の代替型も全て記録）
   if (wasBoundary) {
