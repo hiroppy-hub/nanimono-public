@@ -2552,6 +2552,56 @@ a.compat-thumb-avatar:hover {
   box-shadow: none;
   padding: 8px 0;
 }
+.compat-share-cta {
+  text-align: center;
+  margin: 28px auto 8px;
+  padding: 8px 16px 4px;
+}
+.compat-share-title {
+  font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  color: #6a4a1a;
+  margin-bottom: 18px;
+}
+.compat-share-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.compat-share-btn {
+  background: linear-gradient(135deg, #f7e7ce 0%, #e8d2a8 50%, #d4b87a 100%);
+  border: 1px solid rgba(184, 152, 92, 0.7);
+  color: #6a4a1a;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    0 0 12px rgba(255, 240, 200, 0.55),
+    0 2px 8px rgba(184, 152, 92, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.compat-share-btn:hover,
+.compat-share-btn:active,
+.compat-share-btn:focus {
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 18px rgba(255, 245, 215, 0.8),
+    0 4px 12px rgba(184, 152, 92, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.7);
+}
+@media (max-width: 700px) {
+  .compat-share-title { font-size: 15px; }
+  .compat-share-btn { padding: 11px 18px; font-size: 13px; }
+}
 .compat-divider {
   width: 100%;
   max-width: 480px;
@@ -2565,12 +2615,6 @@ a.compat-thumb-avatar:hover {
 }
 @media (max-width: 700px) {
   .compat-divider { height: 18px; margin: 0 auto 4px; max-width: 280px; }
-}
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto repeat(3, auto);
-  column-gap: 24px;
-  row-gap: 14px;
 }
 .compat-v2 .compat-col {
   display: grid;
@@ -4221,6 +4265,15 @@ function renderPreview(data, myType, allData) {
         </div>
       </div>
       <div class="compat-divider" aria-hidden="true"></div>
+      ${(myType && myType === data.id) ? `
+      <div class="compat-share-cta">
+        <div class="compat-share-title">✨ 自分の相性を友達にも教える ✨</div>
+        <div class="compat-share-buttons">
+          <button class="compat-share-btn" onclick="shareCardToLine('')">📤 LINEで送る</button>
+          <button class="compat-share-btn" onclick="copyCardUrl('')">🔗 URLをコピー</button>
+          <button class="compat-share-btn" onclick="shareCardToX('')">𝕏 でシェア</button>
+        </div>
+      </div>` : ''}
     </div></div>`;
     })() : data.compat ? `
     <div class="preview-section"><div class="preview-section-inner">
