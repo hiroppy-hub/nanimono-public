@@ -1956,6 +1956,13 @@ async function showResult() {
 
   localStorage.setItem("nanimono_last", JSON.stringify({ typeId, date: new Date().toLocaleDateString("ja-JP") }));
   localStorage.setItem("nanimono_myType", typeId);
+  // 履歴に追加（最新10件まで保持）
+  try {
+    const history = JSON.parse(localStorage.getItem("nanimono_history") || "[]");
+    history.unshift({ typeId, date: new Date().toISOString() });
+    if (history.length > 10) history.length = 10;
+    localStorage.setItem("nanimono_history", JSON.stringify(history));
+  } catch(e) { console.warn("history save failed", e); }
   localStorage.setItem("nanimono_lastScores", JSON.stringify(scores));
   // 表示順がシャッフルされているのでid順に並べ直して保存（replay再現用）
   const answersById = new Array(questions.length);

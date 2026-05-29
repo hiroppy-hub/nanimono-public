@@ -1958,6 +1958,64 @@ body[data-type="ENFP-T"] .illust-caption {
   border-color: #7c5cbf;
   color: #7c5cbf;
 }
+.history-section {
+  max-width: 480px;
+  margin: 28px auto 24px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(184, 152, 92, 0.18);
+  border-radius: 10px;
+  text-align: center;
+}
+.history-section:empty { display: none; }
+.history-title {
+  font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: #6a4a1a;
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+.history-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(184, 152, 92, 0.12);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s, transform 0.15s;
+}
+.history-entry:hover {
+  background: rgba(255, 250, 240, 0.8);
+  transform: translateY(-1px);
+}
+.history-avatar {
+  width: 36px; height: 36px; flex: 0 0 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #eee;
+}
+.history-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.history-meta { flex: 1; text-align: left; }
+.history-date { font-size: 11px; color: #999; letter-spacing: 0.05em; }
+.history-name { font-size: 14px; color: #333; font-weight: 500; }
+.history-id { font-size: 11px; color: #999; margin-left: 4px; }
+.history-more { margin-top: 10px; }
+.history-more summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: #6a4a1a;
+  letter-spacing: 0.08em;
+  padding: 6px 0;
+  list-style: none;
+  opacity: 0.75;
+}
+.history-more summary::-webkit-details-marker { display: none; }
+.history-more[open] summary { opacity: 1; margin-bottom: 8px; }
 .footer .retry-btn {
   background: #fff;
   border: 1px solid #ddd;
@@ -3929,6 +3987,7 @@ function renderResult(data, allData) {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
         </a>
       </div>
+      <div class="history-section" id="historySection"></div>
       <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
         <button class="retry-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ トップに戻る</button>
         <button class="retry-btn champagne-btn" onclick="location.href='result.html?type=${data.id}&preview=1'">✨ 相性診断結果 ✨</button>
@@ -3937,6 +3996,9 @@ function renderResult(data, allData) {
     </div>`;
 
   document.getElementById("mainContent").innerHTML = html;
+
+  // 過去の診断履歴を描画（今回の結果は除外、最新1件＋全件展開）
+  try { renderHistory(data.id, allData); } catch(e) { console.warn("history render failed", e); }
 
   // 揺らぎ突破バッジ：境界の人がタイブレーカーを抜けた場合のみ表示
   try {
@@ -4627,6 +4689,46 @@ function showToast(msg) {
   t.classList.add("show");
   setTimeout(() => t.classList.remove("show"), 2000);
 }
+function renderHistory(currentTypeId, allData) {
+  const container = document.getElementById("historySection");
+  if (!container) return;
+  let history;
+  try { history = JSON.parse(localStorage.getItem("nanimono_history") || "[]"); }
+  catch(e) { return; }
+  if (!history || !history.length) return;
+  // 今回の結果（最新1件 = 今表示中の型と日付近接）は除外
+  const past = history.slice(1);
+  if (!past.length) return;
+  const formatDate = (iso) => {
+    try { const d = new Date(iso); return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`; }
+    catch(e) { return ""; }
+  };
+  const renderEntry = (h) => {
+    const t = allData.find(x => x.id === h.typeId);
+    if (!t) return "";
+    const face = `挿絵/${t.name}/${t.name}_${t.id}_face.webp`;
+    const hero = `挿絵/${t.name}/${t.name}_${t.id}_hero.webp`;
+    return `<a class="history-entry" href="result.html?type=${t.id}&preview=1">
+      <div class="history-avatar"><img src="${face}" alt="" onerror="this.onerror=null;this.src='${hero}';"></div>
+      <div class="history-meta">
+        <div class="history-date">${formatDate(h.date)}</div>
+        <div class="history-name">${t.name}<span class="history-id">（${t.id}）</span></div>
+      </div>
+    </a>`;
+  };
+  const first = renderEntry(past[0]);
+  const rest = past.slice(1).map(renderEntry).join("");
+  container.innerHTML = `
+    <div class="history-title">過去の私</div>
+    <div class="history-list">${first}</div>
+    ${rest ? `
+    <details class="history-more">
+      <summary>全件見る（${past.length}件）▾</summary>
+      <div class="history-list">${rest}</div>
+    </details>` : ""}
+  `;
+}
+
 function copyCardUrl(anchor) {
   navigator.clipboard.writeText(getCardUrl(anchor, "copy")).then(() => showToast("URLをコピーしました"));
 }
