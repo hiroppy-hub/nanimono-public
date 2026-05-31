@@ -1,0 +1,16 @@
+{
+  "name": "ナニモノ",
+  "short_name": "ナニモノ",
+  "description": "32の人格。あなたは、何者か。",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5ede0",
+  "theme_color": "#6a4a1a",
+  "lang": "ja",
+  "icons": [
+    { "src": "挿絵/favicon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "挿絵/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "挿絵/favicon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
