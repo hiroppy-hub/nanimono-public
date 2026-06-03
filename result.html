@@ -489,7 +489,13 @@ body.shadow-mode {
   background: none;
   border: 1px solid var(--accent, #c8c4c0);
   border-radius: 4px;
-  padding: 7px 18px;
+  padding: 0 18px;
+  height: 32px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
   font-size: 11px;
   color: var(--accent, #888);
   letter-spacing: 2px;
@@ -499,7 +505,10 @@ body.shadow-mode {
   transition: all 0.25s;
   flex-shrink: 0;
   opacity: 0.85;
+  line-height: 1;
 }
+.sticky-header .header-types,
+.sticky-header .header-share { display: inline-flex; align-items: center; }
 .sticky-header .share-btn:hover {
   background: var(--accent-grad);
   border-color: var(--accent);
@@ -528,7 +537,8 @@ body.shadow-mode {
     gap: 6px;
   }
   .sticky-header .share-btn {
-    padding: 5px 10px;
+    padding: 0 10px;
+    height: 28px;
     font-size: 11px;
     white-space: nowrap;
     writing-mode: horizontal-tb;
@@ -546,7 +556,8 @@ body.shadow-mode {
     letter-spacing: 1px;
   }
   .sticky-header .share-btn {
-    padding: 5px 10px;
+    padding: 0 10px;
+    height: 28px;
     font-size: 10px;
     letter-spacing: 1px;
   }
@@ -1113,6 +1124,96 @@ body.shadow-mode {
 .bp-track.a .bp-bubble { color: #1F6440; }
 .bp-track.c .bp-bubble { color: #4A2E5C; }
 .bp-track.n .bp-bubble { color: #D24A28; }
+
+/* ===== 5軸の傾向パネル（静かな高級感・タイプカラー連動） ===== */
+.axes-panel {
+  margin: 24px auto 0;
+  max-width: 720px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent, #c8c4c0) 6%, #fdfcfb),
+    color-mix(in srgb, var(--accent, #c8c4c0) 2%, #fdfcfb));
+  border: 1px solid color-mix(in srgb, var(--accent, #c8c4c0) 22%, transparent);
+  border-radius: 14px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--accent, #888) 8%, transparent);
+}
+.axes-panel > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  color: color-mix(in srgb, var(--accent, #555) 70%, #444);
+  position: relative;
+  user-select: none;
+}
+.axes-panel > summary::-webkit-details-marker { display: none; }
+.axes-panel > summary .ap-ornament {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent, #888) 40%, transparent);
+}
+.axes-panel > summary .ap-caret {
+  margin-left: 4px;
+  font-size: 9px;
+  color: color-mix(in srgb, var(--accent, #888) 60%, transparent);
+  transition: transform 0.3s ease;
+}
+.axes-panel[open] > summary .ap-caret { transform: rotate(180deg); }
+.axes-panel .ap-body {
+  padding: 4px 24px 22px;
+  border-top: 1px solid color-mix(in srgb, var(--accent, #ddd) 10%, transparent);
+}
+.axes-panel .ap-item {
+  padding: 14px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent, #eee) 8%, transparent);
+}
+.axes-panel .ap-item:last-child { border-bottom: none; }
+.axes-panel .ap-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.axes-panel .ap-pct {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--accent, #555);
+  letter-spacing: 0.02em;
+  min-width: 56px;
+}
+.axes-panel .ap-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3a3a3a;
+  letter-spacing: 0.1em;
+}
+.axes-panel .ap-desc {
+  font-size: 13px;
+  line-height: 1.85;
+  color: #6a6a6a;
+  letter-spacing: 0.04em;
+}
+@media (max-width: 640px) {
+  .axes-panel { margin: 18px 8px 0; border-radius: 12px; }
+  .axes-panel > summary { padding: 12px 14px; font-size: 12px; letter-spacing: 0.18em; gap: 10px; }
+  .axes-panel > summary .ap-ornament { width: 20px; }
+  .axes-panel .ap-body { padding: 2px 16px 14px; }
+  .axes-panel .ap-item { padding: 11px 0; }
+  .axes-panel .ap-pct { font-size: 19px; min-width: 48px; }
+  .axes-panel .ap-name { font-size: 13px; }
+  .axes-panel .ap-desc { font-size: 12px; line-height: 1.7; }
+  .axes-panel { margin-bottom: -56px; }
+}
 
 .hero-mockup .bars-overlay { display: none; }
 
@@ -1834,6 +1935,26 @@ body[data-type="ENFP-T"] .illust-caption {
   max-width: 280px;
   text-align: left;
   z-index: 10;
+}
+@media (max-width: 640px) {
+  .traits-block { position: relative; }
+  .trait-item { position: static; }
+  .trait-help { position: static; }
+  .trait-tooltip {
+    position: absolute;
+    bottom: auto;
+    top: 100%;
+    left: 16px;
+    right: 16px;
+    transform: none;
+    width: auto;
+    max-width: none;
+    margin-top: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  }
 }
 .trait-label {
   display: flex;
@@ -3894,26 +4015,34 @@ function renderResult(data, allData) {
       <div class="overlay-pct">${data.stats[a.key]}%</div>
     </div>`).join("");
 
-  const mobileRows = axesForOverlay.map(a => {
-    const v = data.stats[a.key];
-    const leftDom = v < 50;
-    const domLabel = leftDom ? a.left : a.right;
-    const domPct = leftDom ? (100 - v) : v;
-    const domDesc = leftDom ? a.descLeft : a.descRight;
-    return `
-    <div class="bp-row">
-      <span class="bp-pole ${a.cls} ${leftDom ? 'active' : ''}">${a.left}型</span>
-      <div class="bp-track ${a.cls}">
-        <div class="bp-dot" data-pct="${v}" style="left:50%">
-          <div class="bp-bubble">
-            <span>${domPct}% ${domLabel}型</span>
-            <span class="trait-help">?<span class="trait-tooltip">${domDesc}</span></span>
-          </div>
-        </div>
+  const axesPanelItems = axesForOverlay
+    .map(a => {
+      const v = data.stats[a.key];
+      const leftDom = v < 50;
+      const domLabel = leftDom ? a.left : a.right;
+      const domPct = leftDom ? (100 - v) : v;
+      const domDesc = leftDom ? a.descLeft : a.descRight;
+      return { domPct, domLabel, domDesc };
+    })
+    .sort((a, b) => b.domPct - a.domPct)
+    .map(o => `
+    <div class="ap-item">
+      <div class="ap-head">
+        <span class="ap-pct">${o.domPct}%</span>
+        <span class="ap-name">${o.domLabel}型</span>
       </div>
-      <span class="bp-pole ${a.cls} ${!leftDom ? 'active' : ''}">${a.right}型</span>
-    </div>`;
-  }).join("");
+      <div class="ap-desc">${o.domDesc}</div>
+    </div>`).join("");
+  const axesPanelHTML = `
+    <details class="axes-panel">
+      <summary>
+        <span class="ap-ornament"></span>
+        あなたの5軸の傾向
+        <span class="ap-ornament"></span>
+        <span class="ap-caret">▼</span>
+      </summary>
+      <div class="ap-body">${axesPanelItems}</div>
+    </details>`;
 
   const shareMenu = (anchor) => `
     <div class="card-share">
@@ -3953,7 +4082,7 @@ function renderResult(data, allData) {
         </div>
       </div>
     </div></div>
-    <div class="mobile-bars-wrap"><div class="mobile-bars" id="card-bars">${mobileRows}</div></div>`;
+    ${axesPanelHTML}`;
 
   const html = `
     ${mockupHTML}
@@ -4215,31 +4344,6 @@ function renderPreview(data, myType, allData) {
 
   const heroSrc = `挿絵/${data.name}/${data.name}_${data.id}_hero.webp`;
   const mockupSrc = heroSrc;
-
-  // 5軸バー（プレビュー版・モバイル形式）
-  const axesForOverlay = [
-    { key: "emotionalSensitivity",cls: "n", left: "安定", right: "繊細" },
-    { key: "openness",            cls: "o", left: "実用", right: "革新" },
-    { key: "agreeableness",       cls: "a", left: "主張", right: "調和" },
-    { key: "conscientiousness",   cls: "c", left: "即興", right: "計画" },
-    { key: "extraversion",        cls: "e", left: "内向", right: "外向" },
-  ];
-  const mobileRows = axesForOverlay.map(a => {
-    const v = data.stats[a.key];
-    const leftDom = v < 50;
-    const domLabel = leftDom ? a.left : a.right;
-    const domPct = leftDom ? (100 - v) : v;
-    return `
-    <div class="bp-row">
-      <span class="bp-pole ${a.cls} ${leftDom ? 'active' : ''}">${a.left}型</span>
-      <div class="bp-track ${a.cls}">
-        <div class="bp-dot" data-pct="${v}" style="left:50%">
-          <div class="bp-bubble"><span>${domPct}% ${domLabel}型</span></div>
-        </div>
-      </div>
-      <span class="bp-pole ${a.cls} ${!leftDom ? 'active' : ''}">${a.right}型</span>
-    </div>`;
-  }).join("");
 
   const html = `
     <div class="hero-wrap"><div class="hero-mockup">
