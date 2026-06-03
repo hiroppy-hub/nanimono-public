@@ -4652,6 +4652,7 @@ function getCardUrl(anchor, src) {
   qs.delete("self");
   qs.delete("src"); // 古い経由情報は除去（新規にsrcを刻む）
   qs.set("preview", "1");
+  qs.set("fresh", "1");
   // 鼻糞リレー：自分のニックネームをrefに刷り込む
   const myNick = localStorage.getItem("nanimono_nickname");
   if (myNick) qs.set("ref", myNick);
